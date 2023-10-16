@@ -182,6 +182,73 @@ const deleteUserPokemon = (request, response) => {
   })
 }
 
+const getPokemonByName = (request, response) => {
+  console.log('Reached getPokemonByName');
+  const { name } = request.params;
+
+  const queryString = 'SELECT * FROM pokedex WHERE pokemon = $1';
+
+  pool.query(queryString, [name], (error, results) => {
+    if (error) {
+      throw error;
+    }
+    response.status(200).json(results.rows);
+  });
+}
+
+const addPokemon = async (request, response) => {
+  const { name } = request.body;
+
+  try {
+    const id = await fetchPokemonDetails(name); // Assuming fetchPokemonDetails gets the ID
+    const queryString = 'INSERT INTO pokedex (id, pokemon) VALUES ($1, $2) ON CONFLICT (id) DO NOTHING';
+    await pool.query(queryString, [id, name]);
+    response.status(201).send(`Pokemon added with ID: ${id}`);
+  } catch (error) {
+    if (error.constraint === 'pokedex_pokemon_key') {
+      response.status(200).send(`Skipped ${name} (already exists)`);
+    } else {
+      response.status(500).send('Internal Server Error');
+    }
+  }
+}
+
+const addToUserCollection = (request, response) => {
+   const { username, pokemonName } = request.body;
+
+   // First, get the user_id based on the username
+   const getUserQuery = 'SELECT id FROM users WHERE username = $1';
+
+   pool.query(getUserQuery, [username], async (error, results) => {
+     if (error) {
+       throw error;
+     }
+
+     try {
+       const userId = results.rows[0].id;
+
+       const pokemonNameStr = pokemonName.pokemon;
+
+       // Use this information to add the Pokemon to the user's collection in the database.
+       // Perform the necessary database operations here.
+
+       const insertQuery = `
+         INSERT INTO user_pokemon (user_id, pokemon_id)
+         VALUES ($1, (SELECT id FROM pokedex WHERE pokemon = $2))
+       `;
+
+       console.log('userId:', userId);
+       console.log('pokemonName:', pokemonNameStr);
+
+       await pool.query(insertQuery, [userId, pokemonNameStr]);
+       response.status(200).send('Added to user collection');
+     } catch (error) {
+       throw error;
+     }
+   });
+ }
+
+
 module.exports = {
   getUsers,
   getUserById,
@@ -198,5 +265,8 @@ module.exports = {
   createUserPokemon,
   updateUserPokemon,
   deleteUserPokemon,
+  getPokemonByName,
+  addPokemon,
+  addToUserCollection,
   pool,
 }

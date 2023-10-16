@@ -52,5 +52,12 @@ const processAndInsertData = async () => {
   }
 };
 
+
+module.exports = {
+  fetchPokemonData,
+  fetchPokemonDetails,
+  processAndInsertData,
+};
+
 // Call this function to start fetching and inserting Pokémon data
 processAndInsertData();
