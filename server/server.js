@@ -4,13 +4,16 @@ const db = require('./connection');
 
 const app = express();
 
+const cors = require('cors');
+app.use(cors());
+
 // Middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Define your routes here
 app.get('/', (request, response) => {
-  res.send('Hello World!');
+  response.send('Hello World!');
 });
 
 app.get('/users', db.getUsers)
@@ -30,6 +33,11 @@ app.get('/user_pokemon/:id', db.getUserPokemonById)
 app.post('/user_pokemon', db.createUserPokemon)
 app.put('/user_pokemon/:id', db.updateUserPokemon)
 app.delete('/user_pokemon/:id', db.deleteUserPokemon)
+
+app.get('/get-pokemon-by-name/:name', db.getPokemonByName);
+app.post('/api/addPokemon', db.addPokemon);
+app.post('/api/addToUserCollection', db.addToUserCollection);
+
 
 // Start the server
 const PORT = process.env.PORT || 3000;
