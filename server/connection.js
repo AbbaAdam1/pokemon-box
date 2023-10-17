@@ -125,6 +125,38 @@ const deletePokemon = (request, response) => {
 }
 ///////////////
 const getUserPokemon = (request, response) => {
+  const user_id = request.params.user_id;
+  const queryString = `
+    SELECT p.pokemon
+    FROM user_pokemon up
+    JOIN pokedex p ON up.pokemon_id = p.id
+    WHERE up.user_id = $1
+  `;
+
+  pool.query(queryString, [user_id], (error, results) => {
+    if (error) {
+      throw error;
+    }
+    const pokemonNames = results.rows.map(row => row.pokemon);
+    response.status(200).json(pokemonNames);
+  });
+};
+
+
+/*
+const getUserPokemon = (request, response) => {
+  const user_id = request.params.user_id;
+  const queryString = 'SELECT * FROM user_pokemon WHERE user_id = $1';
+  db.pool.query(queryString, [user_id], (error, results) => {
+    if (error) {
+      throw error;
+    }
+    response.status(200).json(results.rows);
+  });
+};
+
+/*
+const getUserPokemon = (request, response) => {
   pool.query('SELECT * FROM user_pokemon ORDER BY id ASC', (error, results) => {
     if (error) {
       throw error
@@ -132,7 +164,7 @@ const getUserPokemon = (request, response) => {
     response.status(200).json(results.rows)
   })
 }
-
+*/
 const getUserPokemonById = (request, response) => {
   const id = parseInt(request.params.id)
 
@@ -171,6 +203,7 @@ const updateUserPokemon = (request, response) => {
   )
 }
 
+/*
 const deleteUserPokemon = (request, response) => {
   const id = parseInt(request.params.id)
 
@@ -181,6 +214,38 @@ const deleteUserPokemon = (request, response) => {
     response.status(200).send(`User Pokemon deleted with ID: ${id}`)
   })
 }
+
+
+const deleteUserPokemon = (request, response) => {
+  const user_id = parseInt(request.params.user_id);
+  const pokemon_id = parseInt(request.params.pokemon_id);
+
+  pool.query('DELETE FROM user_pokemon WHERE user_id = $1 AND pokemon_id = $2', [user_id, pokemon_id], (error, results) => {
+    if (error) {
+      throw error;
+    }
+    response.status(200).send(`User Pokemon deleted with user ID: ${user_id} and pokemon ID: ${pokemon_id}`);
+  });
+};
+*/
+
+const deleteUserPokemon = (request, response) => {
+  const user_id = request.params.user_id;
+  const user_pokemon_id = request.params.user_pokemon_id;
+
+  const queryString = `
+    DELETE FROM user_pokemon
+    WHERE user_id = $1 AND id = $2
+  `;
+
+  pool.query(queryString, [user_id, user_pokemon_id], (error, results) => {
+    if (error) {
+      throw error;
+    }
+    response.status(200).send(`User Pokemon deleted with ID: ${user_pokemon_id}`);
+  });
+};
+
 
 const getPokemonByName = (request, response) => {
   console.log('Reached getPokemonByName');

@@ -1,5 +1,6 @@
 import React from 'react';
 import Modal from 'react-modal';
+import axios from 'axios';
 
 const customStyles = {
   content: {
@@ -14,13 +15,33 @@ const customStyles = {
 
 Modal.setAppElement('#root'); // Ensure it's accessible by screen readers
 
-const Modals = ({ isOpen, closeModal, pokemon, species }) => {
+const Modals = ({ isOpen, closeModal, pokemon, species, userId, userPokemonId }) => {
   let subtitle;
 
   function afterOpenModal() {
     // references are now sync'd and can be accessed.
     subtitle.style.color = '#f00';
   }
+/*
+    const deleteFromUserCollection = async () => {
+      try {
+        console.log('test');
+        const response = await axios.delete(`http://localhost:3000/api/deleteUserPokemon/${userId}/${pokemonId}`);
+        console.log('Deleted Pokemon:', response.data);
+      } catch (error) {
+        console.error('Error deleting Pokemon:', error);
+      }
+    };
+*/
+
+  const deleteFromUserCollection = async () => {
+    try {
+      const response = await axios.delete(`http://localhost:3000/api/deleteUserPokemon/${userId}/${userPokemonId}`);
+      console.log('Deleted Pokemon:', response.data);
+    } catch (error) {
+      console.error('Error deleting Pokemon:', error);
+    }
+  };
 
   return (
     <Modal
@@ -42,10 +63,7 @@ const Modals = ({ isOpen, closeModal, pokemon, species }) => {
 
       <form>
         <input />
-        <button>tab navigation</button>
-        <button>stays</button>
-        <button>inside</button>
-        <button>the modal</button>
+        <button onClick={deleteFromUserCollection}>Release Pokemon</button>
       </form>
     </Modal>
   );

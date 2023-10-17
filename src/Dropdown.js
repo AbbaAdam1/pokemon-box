@@ -40,9 +40,13 @@ const handleSelect = async (e) => {
 const handleSelect = async (e) => {
   const selectedPokemonName = e.target.value;
 
+  //PASS PROPS AS YOU DID BEFORE
+
   try {
     const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${selectedPokemonName}`);
+    const speciesResponse = await axios.get(`https://pokeapi.co/api/v2/pokemon-species/${selectedPokemonName}`);
     const pokemonData = response.data;
+    const speciesData = speciesResponse.data;
 
     // Now you have the pokemonData, match it to your pokedex table on the client side
     try {
@@ -51,15 +55,45 @@ const handleSelect = async (e) => {
       const matchedPokemon = pokedexResponse.data[0]; // Assuming there's only one match
 
       // Pass the matchedPokemon to the parent component (App.js)
-      props.onSelect({ pokemonData, matchedPokemon });
+      props.onSelect({ pokemonData, matchedPokemon, speciesData });
     } catch (error) {
       console.error('Error fetching Pokemon data from pokedex:', error);
     }
   } catch (error) {
     console.error('Error fetching Pokemon data:', error);
   }
+  setShowDropdown(false);
 };
 
+/* before
+const handleSelect = async (e) => {
+  const selectedPokemonName = e.target.value;
+
+  //PASS PROPS AS YOU DID BEFORE
+
+  try {
+    const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${selectedPokemonName}`);
+    const speciesResponse = await axios.get(`https://pokeapi.co/api/v2/pokemon-species/${selectedPokemonName}`);
+    const pokemonData = response.data;
+    const speciesData = speciesResponse.data;
+
+    // Now you have the pokemonData, match it to your pokedex table on the client side
+    try {
+      //const pokedexResponse = await axios.get(`/get-pokemon-by-name/${selectedPokemonName}`);
+      const pokedexResponse = await axios.get(`http://localhost:3000/get-pokemon-by-name/${selectedPokemonName}`);
+      const matchedPokemon = pokedexResponse.data[0]; // Assuming there's only one match
+
+      // Pass the matchedPokemon to the parent component (App.js)
+      props.onSelect({ pokemonData, matchedPokemon, speciesData });
+    } catch (error) {
+      console.error('Error fetching Pokemon data from pokedex:', error);
+    }
+  } catch (error) {
+    console.error('Error fetching Pokemon data:', error);
+  }
+  setShowDropdown(false);
+};
+*/
 
   const toggleDropdown = () => {
     setShowDropdown(!showDropdown);

@@ -28,12 +28,14 @@ app.post('/pokemon', db.createPokemon)
 app.put('/pokemon/:id', db.updatePokemon)
 app.delete('/pokemon/:id', db.deletePokemon)
 
-app.get('/user_pokemon', db.getUserPokemon)
+//app.get('/user_pokemon', db.getUserPokemon)
 app.get('/user_pokemon/:id', db.getUserPokemonById)
 app.post('/user_pokemon', db.createUserPokemon)
 app.put('/user_pokemon/:id', db.updateUserPokemon)
-app.delete('/user_pokemon/:id', db.deleteUserPokemon)
+//app.delete('/user_pokemon/:id', db.deleteUserPokemon)
 
+app.get('/api/getUserPokemon/:user_id', db.getUserPokemon);
+app.delete('/api/deleteUserPokemon/:user_id/:pokemon_id', db.deleteUserPokemon);
 app.get('/get-pokemon-by-name/:name', db.getPokemonByName);
 app.post('/api/addPokemon', db.addPokemon);
 app.post('/api/addToUserCollection', db.addToUserCollection);

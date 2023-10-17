@@ -11,6 +11,10 @@ const PokemonData = () => {
   const [loading1, setLoading1] = useState(true);
   const [modalIsOpen, setIsOpen] = React.useState(false);
   const [showPopup, setShowPopup] = useState(false);
+  const [userPokemon, setUserPokemon] = useState([]);
+  const [userSpecies, setUserSpecies] = useState([]);
+   const [selectedPokemonIndex, setSelectedPokemonIndex] = useState(null);
+  const userId = 1;
 
 /*
   const handleSelect = ({ pokemonData, speciesData }) => {
@@ -21,15 +25,21 @@ const PokemonData = () => {
     setSpecies(speciesData);
   };
 */
-  const handleSelect = ({ pokemonData, matchedPokemon }) => {
+  const handleSelect = ({ pokemonData, matchedPokemon, speciesData }) => {
     console.log('Selected Pokemon data in App:', pokemonData);
     console.log('Matched Pokemon data in App:', matchedPokemon);
+    console.log('Species Pokemon data in App:', speciesData);
+
+    //SET POKEMON AND SPECIES HERE
+    //LOOK UP HOW TO MAP USERPOKEMON CHAT
+    setPokemon(pokemonData);
+    setSpecies(speciesData);
 
     // Assuming you have a function to add the matchedPokemon to the user's collection
-    addToUserCollection(matchedPokemon);
+    addToUserCollection(matchedPokemon, pokemonData, speciesData);
   };
 
-  const addToUserCollection = async (pokemonName) => {
+  const addToUserCollection = async (pokemonName, pokemonData, speciesData) => {
     try {
       const response = await axios.post('http://localhost:3000/api/addToUserCollection', {
         username: 'Abba', // Replace with actual username
@@ -37,6 +47,8 @@ const PokemonData = () => {
       });
 
       console.log('Added to user collection:', response.data);
+      setUserPokemon([...userPokemon, pokemonData]); // Add new Pokémon data to the state
+      setUserSpecies([...userSpecies, speciesData]); // Add new species data to the state
     } catch (error) {
       console.error('Error adding to user collection:', error);
     }
@@ -44,8 +56,10 @@ const PokemonData = () => {
 
 
 
-  function openModal() {
+
+  function openModal(index) {
     setIsOpen(true);
+    setSelectedPokemonIndex(index);
   }
 
   function closeModal() {
@@ -71,6 +85,50 @@ const PokemonData = () => {
     fetchPokemonData();
   }, []);
 */
+
+  useEffect(() => {
+    const fetchUserPokemonData = async () => {
+      try {
+        setLoading1(true);
+        const response = await axios.get(`http://localhost:3000/api/getUserPokemon/${userId}`);
+        const userPokemonNames = response.data;
+
+        // Create empty arrays to store Pokemon data and species data
+        const fetchedPokemonData = [];
+        const fetchedSpeciesData = [];
+
+        // Assuming userPokemonNames is an array
+        for (const pokemonName of userPokemonNames) {
+          try {
+            const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemonName}`);
+            const speciesResponse = await axios.get(`https://pokeapi.co/api/v2/pokemon-species/${pokemonName}`);
+            const pokemonData = response.data;
+            const speciesData = speciesResponse.data;
+
+            // Add the data to respective arrays
+            fetchedPokemonData.push(pokemonData);
+            fetchedSpeciesData.push(speciesData);
+          } catch (error) {
+            console.error('Error fetching Pokémon data:', error);
+          }
+        }
+
+        // Update state with the accumulated data
+        setUserPokemon(fetchedPokemonData);
+        setUserSpecies(fetchedSpeciesData);
+
+      } catch (error) {
+        console.error('Error fetching Pokemon data:', error);
+      } finally {
+        setLoading1(false); // Set loading to false when fetch is complete
+      }
+    };
+
+    fetchUserPokemonData();
+  }, []);
+
+
+
   useEffect(() => {
     const fetchSpeciesData = async () => {
       try {
@@ -97,34 +155,44 @@ const PokemonData = () => {
 
   return (
     <div>
-        <Dropdown onSelect={handleSelect}/>
-        <div className="pokemon-container">
-          <div className="background-image">
-            <img
-              src="Box_Forest_Up.png"
-              alt="Background"
-              style={{ width: '648px', height: '592px' }}
-            />
-          </div>
-
-          {loading1 ? (
-              <p>Loading...</p>
-          ) : (
-              pokemon && (
-                  <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-3 mt-6 absolute top-20 left-0">
-                      <img
-                          src={pokemon.sprites.front_default}
-                          alt={pokemon.name}
-                          onClick={openModal}
-                      />
-                      <Modals isOpen={modalIsOpen} closeModal={closeModal} pokemon={pokemon} species={species}/>
-                  </div>
-              )
-          )}
-
-
-          {showPopup && <Popup />}
+      <Dropdown onSelect={handleSelect}/>
+      <div className="pokemon-container">
+        <div className="background-image">
+          <img
+            src="Box_Forest_Up.png"
+            alt="Background"
+            style={{ width: '648px', height: '592px' }}
+          />
         </div>
+
+        {loading1 ? (
+          <p>Loading...</p>
+        ) : (
+          <div className="grid grid-cols-5 sm:grid-cols-5 md:grid-cols-5 lg:grid-cols-6 gap-3 mt-6 absolute top-20 left-0">
+            {userPokemon.map((pokemonData, index) => (
+              <div key={index}>
+                <img
+                  src={pokemonData.sprites.front_default}
+                  alt={pokemonData.name}
+                  onClick={() => openModal(index)}
+                />
+                {userSpecies[index] && (
+                  <Modals
+                    isOpen={modalIsOpen && selectedPokemonIndex === index}
+                    closeModal={closeModal}
+                    pokemon={pokemonData}
+                    species={userSpecies[index]}
+                    userId={userId}
+                    pokemonId={pokemonData.id}
+                  />
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {showPopup && <Popup />}
+      </div>
     </div>
   );
 };
