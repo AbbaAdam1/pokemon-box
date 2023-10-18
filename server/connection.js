@@ -165,6 +165,7 @@ const getUserPokemon = (request, response) => {
   })
 }
 */
+/*///////////////////////
 const getUserPokemonById = (request, response) => {
   const id = parseInt(request.params.id)
 
@@ -175,7 +176,7 @@ const getUserPokemonById = (request, response) => {
     response.status(200).json(results.rows)
   })
 }
-
+*/////////////////
 const createUserPokemon = (request, response) => {
   const { user_id, pokemon_id } = request.body
 
@@ -229,6 +230,27 @@ const deleteUserPokemon = (request, response) => {
 };
 */
 
+const getUserPokemonById = (request, response) => {
+  const user_id = request.params.user_id;
+  const pokemon_id = request.params.pokemon_id;
+
+  console.log('TESTING', user_id)
+  console.log('TESTING', pokemon_id)
+
+  const queryString = `
+    SELECT id FROM user_pokemon
+    WHERE user_id = $1 AND pokemon_id = $2
+  `;
+
+  pool.query(queryString, [user_id, pokemon_id], (error, results) => {
+    if (error) {
+      throw error;
+    }
+    response.status(200).json(results.rows)
+  });
+};
+
+/*
 const deleteUserPokemon = (request, response) => {
   const user_id = request.params.user_id;
   const pokemon_id = request.params.pokemon_id;
@@ -248,7 +270,31 @@ const deleteUserPokemon = (request, response) => {
     response.status(200).send(`User Pokemon deleted with ID: ${pokemon_id}`);
   });
 };
+*/
 
+const deleteUserPokemon = (request, response) => {
+  const id = request.params.id;
+  const user_id = request.params.user_id;
+  const pokemon_id = request.params.pokemon_id;
+
+  console.log(id)
+  const test = parseInt(id)
+  console.log(test)
+  console.log(user_id)
+  console.log(pokemon_id)
+
+  const queryString = `
+    DELETE FROM user_pokemon
+    WHERE id = $1 AND user_id = $2 AND pokemon_id = $3
+  `;
+
+  pool.query(queryString, [id, user_id, pokemon_id], (error, results) => {
+    if (error) {
+      throw error;
+    }
+    response.status(200).send(`User Pokemon deleted with ID: ${id}`);
+  });
+};
 
 const getPokemonByName = (request, response) => {
   console.log('Reached getPokemonByName');
