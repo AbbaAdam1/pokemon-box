@@ -231,18 +231,21 @@ const deleteUserPokemon = (request, response) => {
 
 const deleteUserPokemon = (request, response) => {
   const user_id = request.params.user_id;
-  const user_pokemon_id = request.params.user_pokemon_id;
+  const pokemon_id = request.params.pokemon_id;
+
+  console.log(user_id)
+  console.log(pokemon_id)
 
   const queryString = `
     DELETE FROM user_pokemon
-    WHERE user_id = $1 AND id = $2
+    WHERE user_id = $1 AND pokemon_id = $2
   `;
 
-  pool.query(queryString, [user_id, user_pokemon_id], (error, results) => {
+  pool.query(queryString, [user_id, pokemon_id], (error, results) => {
     if (error) {
       throw error;
     }
-    response.status(200).send(`User Pokemon deleted with ID: ${user_pokemon_id}`);
+    response.status(200).send(`User Pokemon deleted with ID: ${pokemon_id}`);
   });
 };
 

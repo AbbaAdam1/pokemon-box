@@ -15,7 +15,7 @@ const customStyles = {
 
 Modal.setAppElement('#root'); // Ensure it's accessible by screen readers
 
-const Modals = ({ isOpen, closeModal, pokemon, species, userId, userPokemonId }) => {
+const Modals = ({ isOpen, closeModal, pokemon, species, userId, pokemonId }) => {
   let subtitle;
 
   function afterOpenModal() {
@@ -35,8 +35,10 @@ const Modals = ({ isOpen, closeModal, pokemon, species, userId, userPokemonId })
 */
 
   const deleteFromUserCollection = async () => {
+    console.log(userId)
+    console.log(pokemonId)
     try {
-      const response = await axios.delete(`http://localhost:3000/api/deleteUserPokemon/${userId}/${userPokemonId}`);
+      const response = await axios.delete(`http://localhost:3000/api/deleteUserPokemon/${userId}/${pokemonId}`);
       console.log('Deleted Pokemon:', response.data);
     } catch (error) {
       console.error('Error deleting Pokemon:', error);
