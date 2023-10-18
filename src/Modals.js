@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import axios from 'axios';
 
@@ -15,8 +15,9 @@ const customStyles = {
 
 Modal.setAppElement('#root'); // Ensure it's accessible by screen readers
 
-const Modals = ({ isOpen, closeModal, pokemon, species, userId, userPokemonId }) => {
+const Modals = ({ isOpen, closeModal, pokemon, species, userPokemonId, userId, pokemonId }) => {
   let subtitle;
+  //const [userPokemonId, setUserPokemonId] = useState(null);
 
   function afterOpenModal() {
     // references are now sync'd and can be accessed.
@@ -33,16 +34,48 @@ const Modals = ({ isOpen, closeModal, pokemon, species, userId, userPokemonId })
       }
     };
 */
-
+////////
+/*
   const deleteFromUserCollection = async () => {
+    console.log(userId)
+    console.log(pokemonId)
     try {
-      const response = await axios.delete(`http://localhost:3000/api/deleteUserPokemon/${userId}/${userPokemonId}`);
+      const response = await axios.delete(`http://localhost:3000/api/deleteUserPokemon/${userId}/${pokemonId}`);
       console.log('Deleted Pokemon:', response.data);
     } catch (error) {
       console.error('Error deleting Pokemon:', error);
     }
   };
+  */
+///////
+/*
+  useEffect(() => {
+    const fetchUserPokemonById = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3000/api/getUserPokemonById/${userId}/${pokemonId}`);
+        setUserPokemonId(response.data);
+        console.log(userPokemonId)
+      } catch (error) {
+        console.error('Error fetching user_pokemon IDs:', error);
+      }
+    };
 
+    fetchUserPokemonById(); // Call the function after component mount
+
+  }, [userId, pokemonId]); // Add dependencies if needed
+*/
+  const deleteFromUserCollection = async () => {
+    console.log(userPokemonId)
+    const testuserId = parseInt(userId)
+    console.log(testuserId)
+    console.log(pokemonId)
+    try {
+      const response = await axios.delete(`http://localhost:3000/api/deleteUserPokemon/${userPokemonId}/${userId}/${pokemonId}`);
+      console.log('Deleted Pokemon:', response.data);
+    } catch (error) {
+      console.error('Error deleting Pokemon:', error);
+    }
+  };
   return (
     <Modal
       isOpen={isOpen}

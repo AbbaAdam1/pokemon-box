@@ -13,6 +13,7 @@ const PokemonData = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [userPokemon, setUserPokemon] = useState([]);
   const [userSpecies, setUserSpecies] = useState([]);
+  const [userPokemonId, setUserPokemonId] = useState(null);
    const [selectedPokemonIndex, setSelectedPokemonIndex] = useState(null);
   const userId = 1;
 
@@ -60,6 +61,7 @@ const PokemonData = () => {
   function openModal(index) {
     setIsOpen(true);
     setSelectedPokemonIndex(index);
+    fetchUserPokemonById(index);
   }
 
   function closeModal() {
@@ -144,6 +146,29 @@ const PokemonData = () => {
     fetchSpeciesData();
   }, []);
 
+///////
+  const fetchUserPokemonById = async (index) => {
+    try {
+      const user_id = userId; // Get user_id from userId
+      const pokemon_id = userPokemon[index].id; // Get pokemon_id from userPokemon[index]
+      console.log('testing user id:', user_id);
+      console.log('testing pokemon id:', pokemon_id);
+
+      const response = await axios.get(`http://localhost:3000/api/getUserPokemonById/${user_id}/${pokemon_id}`);
+      const userPokemonIdFromResponse = response.data[0].id;
+      setUserPokemonId(userPokemonIdFromResponse);
+      console.log('testing userpokemon id:', userPokemonId);
+    } catch (error) {
+      console.error('Error fetching user_pokemon IDs:', error);
+    }
+  };
+
+useEffect(() => {
+  console.log('testing userpokemon id again:', userPokemonId);
+  //const tester = userPokemonId.data[0].id;;
+  //console.log(tester);
+}, [userPokemonId]);
+
   const Popup = () => {
     return (
       <div className="popup">
@@ -184,6 +209,7 @@ const PokemonData = () => {
                     species={userSpecies[index]}
                     userId={userId}
                     pokemonId={pokemonData.id}
+                    userPokemonId={userPokemonId}
                   />
                 )}
               </div>
