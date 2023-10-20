@@ -1,0 +1,39 @@
+@tailwind base;
+
+@tailwind components;
+
+@tailwind utilities;
+
+.pokemon-container {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+}
+
+.background-image {
+  position: relative;
+}
+
+.front-images {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.front-images img {
+  margin-right: 10px; /* Adjust the margin between front images */
+}
+
+.overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.overlay img {
+  width: 150px; /* Adjust the size of the Pokémon image */
+}
+
+/* Add any additional styles you need */

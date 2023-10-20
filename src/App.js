@@ -3,6 +3,7 @@ import axios from 'axios';
 import './index.css';
 import Modals from './Modals.js'
 import Dropdown from './Dropdown.js';
+import { AuthContextProvider } from '@/context/AuthContext'
 
 const PokemonData = () => {
   const [pokemon, setPokemon] = useState(null);
@@ -179,6 +180,7 @@ useEffect(() => {
   };
 
   return (
+  <AuthContextProvider>
     <div>
       <Dropdown onSelect={handleSelect}/>
       <div className="pokemon-container">
@@ -220,6 +222,7 @@ useEffect(() => {
         {showPopup && <Popup />}
       </div>
     </div>
+    </AuthContextProvider>
   );
 };
 
