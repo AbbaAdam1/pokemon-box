@@ -1,10 +1,8 @@
+/** @type {import('tailwindcss').Config} */
+const forms = require('@tailwindcss/forms');
+
 module.exports = {
-  content: [
-    "./public/**/*.html",
-    "./src/**/*.{js,jsx,ts,tsx}",
-  ],
-  theme: {
-    extend: {},
-  },
-  plugins: [],
-}
+  content: ['./src/**/*.{js,ts,jsx,tsx}'],
+  darkMode: 'media',
+  plugins: [forms],
+};
