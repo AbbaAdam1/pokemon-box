@@ -18,25 +18,8 @@ const Dropdown = (props) => {
 
     fetchPokemonData();
   }, []);
-/*
-const handleSelect = async (e) => {
-  console.log(`Selected Pokemon: ${e.target.value}`);
-  try {
-    const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${e.target.value}`);
-    const speciesResponse = await axios.get(`https://pokeapi.co/api/v2/pokemon-species/${e.target.value}`);
-    console.log('API Response:', response.data);
-    console.log('Species Response:', speciesResponse.data);
 
-    props.onSelect({
-      pokemonData: response.data,
-      speciesData: speciesResponse.data
-    });
-  } catch (error) {
-    console.error('Error fetching Pokemon data:', error);
-  }
-  setShowDropdown(false);
-};
-*/
+//step 1, handoff from pokdemondata
 const handleSelect = async (e) => {
   const selectedPokemonName = e.target.value;
 
@@ -50,7 +33,6 @@ const handleSelect = async (e) => {
 
     // Now you have the pokemonData, match it to your pokedex table on the client side
     try {
-      //const pokedexResponse = await axios.get(`/get-pokemon-by-name/${selectedPokemonName}`);
       const pokedexResponse = await axios.get(`http://localhost:3000/get-pokemon-by-name/${selectedPokemonName}`);
       const matchedPokemon = pokedexResponse.data[0]; // Assuming there's only one match
 
@@ -63,46 +45,56 @@ const handleSelect = async (e) => {
     console.error('Error fetching Pokemon data:', error);
   }
   setShowDropdown(false);
+
+  //add pokemon to collection
+  addToUserCollection(matchedPokemon, pokemonData, speciesData);
 };
-
-/* before
-const handleSelect = async (e) => {
-  const selectedPokemonName = e.target.value;
-
-  //PASS PROPS AS YOU DID BEFORE
-
-  try {
-    const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${selectedPokemonName}`);
-    const speciesResponse = await axios.get(`https://pokeapi.co/api/v2/pokemon-species/${selectedPokemonName}`);
-    const pokemonData = response.data;
-    const speciesData = speciesResponse.data;
-
-    // Now you have the pokemonData, match it to your pokedex table on the client side
-    try {
-      //const pokedexResponse = await axios.get(`/get-pokemon-by-name/${selectedPokemonName}`);
-      const pokedexResponse = await axios.get(`http://localhost:3000/get-pokemon-by-name/${selectedPokemonName}`);
-      const matchedPokemon = pokedexResponse.data[0]; // Assuming there's only one match
-
-      // Pass the matchedPokemon to the parent component (App.js)
-      props.onSelect({ pokemonData, matchedPokemon, speciesData });
-    } catch (error) {
-      console.error('Error fetching Pokemon data from pokedex:', error);
-    }
-  } catch (error) {
-    console.error('Error fetching Pokemon data:', error);
-  }
-  setShowDropdown(false);
-};
-*/
 
   const toggleDropdown = () => {
     setShowDropdown(!showDropdown);
   };
+////////////////////////////////////////////////////////////////////////////////////////////
 
-  //const handleSelect = (e) => {
-  //  console.log(`Selected Pokemon: ${e.target.value}`);
-  //  setShowDropdown(false);
-  //};
+const fetchPokemonData = async (offset, limit) => {
+  try {
+    const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/?offset=${offset}&limit=${limit}`);
+    return response.data.results;
+  } catch (error) {
+    throw error;
+  }
+};
+
+//step 2,
+const addToUserCollection = async (pokemonName, pokemonData, speciesData) => {
+    try {
+      const response = await axios.post('http://localhost:3000/api/addToUserCollection', {
+        username: 'Abba', // Replace with actual username
+        pokemonName: pokemonName
+      });
+
+      console.log('Added to user collection:', response.data);
+      setUserPokemon([...userPokemon, pokemonData]); // Add new Pokémon data to the state
+      setUserSpecies([...userSpecies, speciesData]); // Add new species data to the state
+    } catch (error) {
+      console.error('Error adding to user collection:', error);
+    }
+  };
+
+const fetchUserPokemonById = async (index) => {
+    try {
+      const user_id = userId; // Get user_id from userId
+      const pokemon_id = userPokemon[index].id; // Get pokemon_id from userPokemon[index]
+      console.log('testing user id:', user_id);
+      console.log('testing pokemon id:', pokemon_id);
+
+      const response = await axios.get(`http://localhost:3000/api/getUserPokemonById/${user_id}/${pokemon_id}`);
+      const userPokemonIdFromResponse = response.data[0].id;
+      setUserPokemonId(userPokemonIdFromResponse);
+      console.log('testing userpokemon id:', userPokemonId);
+    } catch (error) {
+      console.error('Error fetching user_pokemon IDs:', error);
+    }
+  };
 
   return (
     <div>
