@@ -29,26 +29,34 @@ const handleSelect = async (e) => {
 
   try {
     //selects pokemon and passes pokemon/species data
+    //NECESSARY BELOW
     const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${selectedPokemonName}`);
     const speciesResponse = await axios.get(`https://pokeapi.co/api/v2/pokemon-species/${selectedPokemonName}`);
     const pokemonData = response.data; //pokemon api data
     const speciesData = speciesResponse.data; //species api data
+    //NECESSARY ABOVE
 
     // Now you have the pokemonData, match it to your pokedex table on the client side
     try {
       //const { data, error } = await supabase
-      //      .from('pokedex') //good
-      //      .select('pokemon') //not sure
-      //      .eq('user_id', user_id); // good
+      //      .from('pokedex')
+      //      .select('pokemon')
+      //      .eq('user_id', selectedPokemonName);
 
       //this is to get the name. you can probably just get the name from pokemonData so probably not necessary
       //CURRENTLY HERE FIND A WAY TO GET THE POKEMON'S NAME FROM POKEMONDATA VARIABLE. after that uimplement the insert from addtouser
       const pokedexResponse = await axios.get(`http://localhost:3000/get-pokemon-by-name/${selectedPokemonName}`);
-      const matchedPokemon = pokedexResponse.data[0]; // Assuming there's only one match
+      const matchedPokemon = pokedexResponse.data[0]; // Assuming there's only one match. pokemon name
+
+      const { data, error } = await supabase
+                      .from('user_pokemon') //good
+                      .select('id')
+                      .insert({ user_id: 1, pokemon_id: 'Denmark' }) //replace 1 and denmark with user id and pokemon id
+                      .eq('user_id', user_id); // good
 
       // Pass the matchedPokemon to the parent component (App.js)
-      props.onSelect({ pokemonData, matchedPokemon, speciesData });
-      addToUserCollection(matchedPokemon, pokemonData, speciesData);
+      props.onSelect({ pokemonData, matchedPokemon, speciesData }); //sends to handleselect on page
+      addToUserCollection(matchedPokemon, pokemonData, speciesData); //sends to addtouser collection
     } catch (error) {
       console.error('Error fetching Pokemon data from pokedex:', error);
     }

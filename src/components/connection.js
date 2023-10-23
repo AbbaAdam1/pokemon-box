@@ -340,6 +340,12 @@ const addToUserCollection = (request, response) => {
        // Use this information to add the Pokemon to the user's collection in the database.
        // Perform the necessary database operations here.
 
+       const { data, error } = await supabase
+                .from('user_pokemon') //good
+                .select('id')
+                .insert({ user_id: 1, pokemon_id: 'Denmark' }) //replace 1 and denmark with user id and pokemon id
+                .eq('user_id', user_id); // good
+
        const insertQuery = `
          INSERT INTO user_pokemon (user_id, pokemon_id)
          VALUES ($1, (SELECT id FROM pokedex WHERE pokemon = $2))

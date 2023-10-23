@@ -148,9 +148,19 @@ const addToUserCollection = async (pokemonName, pokemonData, speciesData) => {
       const userId = results.rows[0].id;
 
       //query^
+      //get
+      //this whole thing selects a pokemon, then adds it to user_pokemon table
+      //NECESSARY BELOW
+      const { data, error } = await supabase
+                      .from('user_pokemon') //good
+                      .select('id')
+                      .insert({ user_id: 1, pokemon_id: 'Denmark' }) //replace 1 and denmark with user id and pokemon id
+                      .eq('user_id', user_id); // good
 
+      //this part updates the state
       setUserPokemon([...userPokemon, pokemonData]); // Add new Pokémon data to the state
       setUserSpecies([...userSpecies, speciesData]); // Add new species data to the state
+      //NECESSARY ABOVE
     } catch (error) {
       console.error('Error adding to user collection:', error);
     }
@@ -191,6 +201,55 @@ const addToUserCollection = (request, response) => {
    });
  }
 
+
+const NEWhandleSelect = async (e) => {
+  const selectedPokemonName = e.target.value; //NEEDED
+
+  //PASS PROPS AS YOU DID BEFORE
+
+  try {
+    //selects pokemon and passes pokemon/species data
+    //NECESSARY BELOW
+    const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${selectedPokemonName}`);
+    const speciesResponse = await axios.get(`https://pokeapi.co/api/v2/pokemon-species/${selectedPokemonName}`);
+    const pokemonData = response.data; //pokemon api data
+    const speciesData = speciesResponse.data; //species api data
+
+    setPokemon(pokemonData);
+    setSpecies(speciesData);
+    //NECESSARY ABOVE
+
+    try {
+      //this is to get the name. you can probably just get the name from pokemonData so probably not necessary
+      //CURRENTLY HERE FIND A WAY TO GET THE POKEMON'S NAME FROM POKEMONDATA VARIABLE. after that uimplement the insert from addtouser
+      const pokedexResponse = await axios.get(`http://localhost:3000/get-pokemon-by-name/${selectedPokemonName}`);
+      const matchedPokemon = pokedexResponse.data[0]; // Assuming there's only one match. pokemon name
+
+      //Now get pokemon name
+
+      const { data, error } = await supabase
+                      .from('user_pokemon') //good
+                      .select('id')
+                      .insert({ user_id: 1, pokemon_id: 'Denmark' }) //replace 1 and denmark with user id and pokemon id
+                      .eq('user_id', user_id); // good
+
+      // Pass the matchedPokemon to the parent component (App.js)
+      props.onSelect({ pokemonData, matchedPokemon, speciesData }); //sends to handleselect on page
+      addToUserCollection(matchedPokemon, pokemonData, speciesData); //sends to addtouser collection
+
+      setUserPokemon([...userPokemon, pokemonData]); // Add new Pokémon data to the state
+      setUserSpecies([...userSpecies, speciesData]); // Add new species data to the state
+    } catch (error) {
+      console.error('Error fetching Pokemon data from pokedex:', error);
+    }
+  } catch (error) {
+    console.error('Error fetching Pokemon data:', error);
+  }
+  setShowDropdown(false);
+
+  //add pokemon to collection
+  //addToUserCollection(matchedPokemon, pokemonData, speciesData);
+};
 
 /*
 const addToUserCollection = (request, response) => {
