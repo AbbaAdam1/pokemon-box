@@ -31,11 +31,18 @@ const handleSelect = async (e) => {
     //selects pokemon and passes pokemon/species data
     const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${selectedPokemonName}`);
     const speciesResponse = await axios.get(`https://pokeapi.co/api/v2/pokemon-species/${selectedPokemonName}`);
-    const pokemonData = response.data;
-    const speciesData = speciesResponse.data;
+    const pokemonData = response.data; //pokemon api data
+    const speciesData = speciesResponse.data; //species api data
 
     // Now you have the pokemonData, match it to your pokedex table on the client side
     try {
+      //const { data, error } = await supabase
+      //      .from('pokedex') //good
+      //      .select('pokemon') //not sure
+      //      .eq('user_id', user_id); // good
+
+      //this is to get the name. you can probably just get the name from pokemonData so probably not necessary
+      //CURRENTLY HERE FIND A WAY TO GET THE POKEMON'S NAME FROM POKEMONDATA VARIABLE. after that uimplement the insert from addtouser
       const pokedexResponse = await axios.get(`http://localhost:3000/get-pokemon-by-name/${selectedPokemonName}`);
       const matchedPokemon = pokedexResponse.data[0]; // Assuming there's only one match
 

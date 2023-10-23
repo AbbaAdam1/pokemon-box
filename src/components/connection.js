@@ -64,6 +64,21 @@ const createUser = (request, response) => {
   })
 }
 
+const getPokemonByName = (request, response) => {
+  console.log('Reached getPokemonByName');
+  const { name } = request.params;
+
+  const queryString = 'SELECT * FROM pokedex WHERE pokemon = $1';
+
+  pool.query(queryString, [name], (error, results) => {
+    if (error) {
+      throw error;
+    }
+    response.status(200).json(results.rows);
+  });
+}
+
+
 /////////////
 
 const getPokemonById = (request, response) => {
