@@ -131,7 +131,7 @@ const PokemonData = () => {
   }, []);
 
 
-
+/*
   useEffect(() => {
     const fetchSpeciesData = async () => {
       try {

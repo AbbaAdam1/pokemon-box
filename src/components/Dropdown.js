@@ -5,12 +5,13 @@ const Dropdown = (props) => {
   const [pokemonList, setPokemonList] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
 
+
   useEffect(() => {
     const fetchPokemonData = async () => {
       try {
         const response = await axios.get('https://pokeapi.co/api/v2/pokemon?limit=151');
         setPokemonList(response.data.results);
-        console.error('api');
+        //console.error('api');
       } catch (error) {
         console.error('Error fetching Pokemon data:', error);
       }
@@ -19,6 +20,7 @@ const Dropdown = (props) => {
     fetchPokemonData();
   }, []);
 
+
 //step 1, handoff from pokdemondata
 const handleSelect = async (e) => {
   const selectedPokemonName = e.target.value;
@@ -26,6 +28,7 @@ const handleSelect = async (e) => {
   //PASS PROPS AS YOU DID BEFORE
 
   try {
+    //selects pokemon and passes pokemon/species data
     const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${selectedPokemonName}`);
     const speciesResponse = await axios.get(`https://pokeapi.co/api/v2/pokemon-species/${selectedPokemonName}`);
     const pokemonData = response.data;
@@ -38,6 +41,7 @@ const handleSelect = async (e) => {
 
       // Pass the matchedPokemon to the parent component (App.js)
       props.onSelect({ pokemonData, matchedPokemon, speciesData });
+      addToUserCollection(matchedPokemon, pokemonData, speciesData);
     } catch (error) {
       console.error('Error fetching Pokemon data from pokedex:', error);
     }
@@ -47,24 +51,103 @@ const handleSelect = async (e) => {
   setShowDropdown(false);
 
   //add pokemon to collection
-  addToUserCollection(matchedPokemon, pokemonData, speciesData);
+  //addToUserCollection(matchedPokemon, pokemonData, speciesData);
 };
 
   const toggleDropdown = () => {
     setShowDropdown(!showDropdown);
   };
 ////////////////////////////////////////////////////////////////////////////////////////////
+//this is what gets all the pokemon and displays it. happens immediately
+/*
+useEffect(() => {
+    const fetchUserPokemonData = async () => {
+      try {
+        //setLoading1(true);
+        //this is what gets all the users pokemon and displays it
+        //const response = await axios.get(`http://localhost:3000/api/getUserPokemon/${userId}`);
+        const response = await axios.get('https://dpnjftjxqogingjrhdoi.supabase.co/rest/v1/user_pokemon/getUserPokemon/${userId}');
 
-const fetchPokemonData = async (offset, limit) => {
-  try {
-    const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/?offset=${offset}&limit=${limit}`);
-    return response.data.results;
-  } catch (error) {
-    throw error;
-  }
-};
+        const userPokemonNames = response.data;
 
-//step 2,
+        // Create empty arrays to store Pokemon data and species data
+        const fetchedPokemonData = [];
+        const fetchedSpeciesData = [];
+
+        // Assuming userPokemonNames is an array
+        for (const pokemonName of userPokemonNames) {
+          try {
+            const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemonName}`);
+            const speciesResponse = await axios.get(`https://pokeapi.co/api/v2/pokemon-species/${pokemonName}`);
+            const pokemonData = response.data;
+            const speciesData = speciesResponse.data;
+
+            // Add the data to respective arrays
+            fetchedPokemonData.push(pokemonData);
+            fetchedSpeciesData.push(speciesData);
+          } catch (error) {
+            console.error('Error fetching Pokémon data:', error);
+          }
+        }
+
+        // Update state with the accumulated data
+        setUserPokemon(fetchedPokemonData);
+        setUserSpecies(fetchedSpeciesData);
+
+      } catch (error) {
+        console.error('Error fetching Pokemon data:', error);
+      } //finally {
+        //setLoading1(false); // Set loading to false when fetch is complete
+      //}
+    };
+
+    fetchUserPokemonData();
+  }, []);
+  */
+/*
+useEffect(() => {
+    const fetchUserPokemonData = async () => {
+      try {
+        //setLoading1(true);
+        //this is what gets all the users pokemon and displays it
+        const response = await axios.get(`http://localhost:3000/api/getUserPokemon/${userId}`);
+        const userPokemonNames = response.data;
+
+        // Create empty arrays to store Pokemon data and species data
+        const fetchedPokemonData = [];
+        const fetchedSpeciesData = [];
+
+        // Assuming userPokemonNames is an array
+        for (const pokemonName of userPokemonNames) {
+          try {
+            const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemonName}`);
+            const speciesResponse = await axios.get(`https://pokeapi.co/api/v2/pokemon-species/${pokemonName}`);
+            const pokemonData = response.data;
+            const speciesData = speciesResponse.data;
+
+            // Add the data to respective arrays
+            fetchedPokemonData.push(pokemonData);
+            fetchedSpeciesData.push(speciesData);
+          } catch (error) {
+            console.error('Error fetching Pokémon data:', error);
+          }
+        }
+
+        // Update state with the accumulated data
+        setUserPokemon(fetchedPokemonData);
+        setUserSpecies(fetchedSpeciesData);
+
+      } catch (error) {
+        console.error('Error fetching Pokemon data:', error);
+      } //finally {
+        //setLoading1(false); // Set loading to false when fetch is complete
+      //}
+    };
+
+    fetchUserPokemonData();
+  }, []);
+*/
+//From handle select. Add pokemon to database
 const addToUserCollection = async (pokemonName, pokemonData, speciesData) => {
     try {
       const response = await axios.post('http://localhost:3000/api/addToUserCollection', {
@@ -73,6 +156,7 @@ const addToUserCollection = async (pokemonName, pokemonData, speciesData) => {
       });
 
       console.log('Added to user collection:', response.data);
+      //adds pokemon to current page
       setUserPokemon([...userPokemon, pokemonData]); // Add new Pokémon data to the state
       setUserSpecies([...userSpecies, speciesData]); // Add new species data to the state
     } catch (error) {
@@ -80,6 +164,18 @@ const addToUserCollection = async (pokemonName, pokemonData, speciesData) => {
     }
   };
 
+/*
+const fetchPokemonData = async (offset, limit) => {
+  try {
+    const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/?offset=${offset}&limit=${limit}`);
+    return response.data.results;
+  } catch (error) {
+    throw error;
+  }
+};
+*/
+
+//For a modal opening. gets clicked pokemon id from user_pokemon table.
 const fetchUserPokemonById = async (index) => {
     try {
       const user_id = userId; // Get user_id from userId

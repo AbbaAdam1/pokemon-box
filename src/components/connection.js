@@ -1,14 +1,36 @@
 const { Pool } = require('pg');
 import sql from './db.js'
 
-/*
 const pool = new Pool({
   user: 'postgres',
-  host: 'localhost',
-  database: 'pokemon',
-  password: 'Supermario1',
+  host: 'db.dpnjftjxqogingjrhdoi.supabase.co',
+  database: 'postgres',
+  password: '7GAIVupaGuD0pHgG',
   port: 5432,
 });
+
+
+//get pokemon of current user. uses user_pokemon table
+/*
+async function getUserPokemon(user_id) {
+  //const user_id = request.params.user_id;
+  const user_pokemon = await sql`
+    SELECT p.pokemon
+    FROM user_pokemon up
+    JOIN pokedex p ON up.pokemon_id = p.id
+    WHERE up.user_id = $1
+  `;
+  //
+  pool.query(queryString, [user_id], (error, results) => {
+    if (error) {
+      throw error;
+    }
+    const pokemonNames = results.rows.map(row => row.pokemon);
+    response.status(200).json(pokemonNames);
+  });
+  //
+  return user_pokemon
+};
 */
 
 const getUsers = (request, response) => {
@@ -93,6 +115,7 @@ const deletePokemon = (request, response) => {
   })
 }
 ///////////////
+/*
 const getUserPokemon = (request, response) => {
   const user_id = request.params.user_id;
   const queryString = `
@@ -123,7 +146,7 @@ const getUserPokemon = (request, response) => {
     response.status(200).json(results.rows);
   });
 };
-
+*/
 /*
 const getUserPokemon = (request, response) => {
   pool.query('SELECT * FROM user_pokemon ORDER BY id ASC', (error, results) => {
@@ -296,6 +319,7 @@ const addToUserCollection = (request, response) => {
      try {
        const userId = results.rows[0].id;
 
+       //We already have userid so the above isnt required since its there to find a user id
        const pokemonNameStr = pokemonName.pokemon;
 
        // Use this information to add the Pokemon to the user's collection in the database.
@@ -317,19 +341,6 @@ const addToUserCollection = (request, response) => {
    });
  }
 
- const createUserInDatabase = async (userId, email) => {
-   try {
-     const query = 'INSERT INTO users (user_id, email) VALUES ($1, $2)';
-     const values = [userId, email];
-
-     const result = await pool.query(query, values);
-     console.log('User added to database:', result.rows[0]);
-   } catch (error) {
-     console.error('Error adding user to database:', error);
-   }
- };
-
-
 module.exports = {
   getUsers,
   getUserById,
@@ -349,6 +360,5 @@ module.exports = {
   getPokemonByName,
   addPokemon,
   addToUserCollection,
-  createUserInDatabase,
   pool,
 }

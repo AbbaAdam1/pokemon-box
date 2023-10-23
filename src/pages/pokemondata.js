@@ -97,7 +97,7 @@ const Home = () => {
     fetchPokemonData();
   }, []);
 */
-
+/*
   useEffect(() => {
     const fetchUserPokemonData = async () => {
       try {
@@ -139,7 +139,7 @@ const Home = () => {
     fetchUserPokemonData();
   }, []);
 
-
+*/
 
   useEffect(() => {
     const fetchSpeciesData = async () => {
