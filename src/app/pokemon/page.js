@@ -20,11 +20,9 @@ import Dropdown from 'src/components/Dropdown';
 
 //import { AuthContextProvider } from '../context/AuthContext'
 
-
-
 const PokemonTrainer = () => {
-  /////const [pokemon, setPokemon] = useState(null);
-  ////const [species, setSpecies] = useState(null);
+  const [pokemon, setPokemon] = useState(null);
+  const [species, setSpecies] = useState(null);
   //const [loading, setLoading] = useState(true);
   const [loading1, setLoading1] = useState(true);
   const [modalIsOpen, setIsOpen] = React.useState(false);
@@ -36,7 +34,7 @@ const PokemonTrainer = () => {
   const [userPokemonId, setUserPokemonId] = useState(null);
    const [selectedPokemonIndex, setSelectedPokemonIndex] = useState(null);
   //const userId = 1;
-  const user_id = 'a7b8bad1-ac99-41fc-a9a2-b62a4dfd8418';
+  const userId = 'a7b8bad1-ac99-41fc-a9a2-b62a4dfd8418';
 
  // const { data } = await supabase.auth.getSession();
 /*
@@ -74,8 +72,6 @@ useEffect(() => {
             }
       try {
         setLoading1(true);
-
-        console.log('are you real?')
 
         //const userPokemonNames = response.data;
 
@@ -130,81 +126,8 @@ useEffect(() => {
     addToUserCollection(matchedPokemon, pokemonData, speciesData);
   };
 
-const addToUserCollection = async (pokemonName, pokemonData, speciesData) => {
-/*this line just gets the user id. we already have that so its not necesscary
-    const { data, error } = await supabase
-                .from('users') //good
-                .select('id')
-                .eq('user_id', user_id); // good
-*/
-    try {
-     // const response = await axios.post('http://localhost:3000/api/addToUserCollection', {
-     //   username: 'Abba', // Replace with actual username
-     //   pokemonName: pokemonName
-     // });
-
-      console.log('Added to user collection:', response.data);
-      //adds pokemon to current page
-      const userId = results.rows[0].id;
-
-      //query^
-      //get
-      //this whole thing selects a pokemon, then adds it to user_pokemon table
-      //NECESSARY BELOW
-      const { data, error } = await supabase
-                      .from('user_pokemon') //good
-                      .select('id')
-                      .insert({ user_id: 1, pokemon_id: 'Denmark' }) //replace 1 and denmark with user id and pokemon id
-                      .eq('user_id', user_id); // good
-
-      //this part updates the state
-      setUserPokemon([...userPokemon, pokemonData]); // Add new Pokémon data to the state
-      setUserSpecies([...userSpecies, speciesData]); // Add new species data to the state
-      //NECESSARY ABOVE
-    } catch (error) {
-      console.error('Error adding to user collection:', error);
-    }
-  };
-
-const addToUserCollection = (request, response) => {
-   const { username, pokemonName } = request.body;
-
-   // First, get the user_id based on the username
-   const getUserQuery = 'SELECT id FROM users WHERE username = $1';
-
-   pool.query(getUserQuery, [username], async (error, results) => {
-     if (error) {
-       throw error;
-     }
-
-     try {
-       const userId = results.rows[0].id;
-
-       const pokemonNameStr = pokemonName.pokemon;
-
-       // Use this information to add the Pokemon to the user's collection in the database.
-       // Perform the necessary database operations here.
-
-       const insertQuery = `
-         INSERT INTO user_pokemon (user_id, pokemon_id)
-         VALUES ($1, (SELECT id FROM pokedex WHERE pokemon = $2))
-       `;
-
-       console.log('userId:', userId);
-       console.log('pokemonName:', pokemonNameStr);
-
-       await pool.query(insertQuery, [userId, pokemonNameStr]);
-       response.status(200).send('Added to user collection');
-     } catch (error) {
-       throw error;
-     }
-   });
- }
-
-
 const NEWhandleSelect = async (e) => {
   const selectedPokemonName = e.target.value; //NEEDED
-
   //PASS PROPS AS YOU DID BEFORE
 
   try {
@@ -212,81 +135,33 @@ const NEWhandleSelect = async (e) => {
     //NECESSARY BELOW
     const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${selectedPokemonName}`);
     const speciesResponse = await axios.get(`https://pokeapi.co/api/v2/pokemon-species/${selectedPokemonName}`);
-    const pokemonData = response.data; //pokemon api data
-    const speciesData = speciesResponse.data; //species api data
+    const selectedPokemonData = response.data; //pokemon api data
+    const selectedSpeciesData = speciesResponse.data; //species api data
 
-    setPokemon(pokemonData);
-    setSpecies(speciesData);
+    const selectedPokemonId = pokemonData.id;
+
+    //setPokemon(selectedPokemonData);
+    //setSpecies(selectedSpeciesData);
     //NECESSARY ABOVE
 
     try {
       //this is to get the name. you can probably just get the name from pokemonData so probably not necessary
-      //CURRENTLY HERE FIND A WAY TO GET THE POKEMON'S NAME FROM POKEMONDATA VARIABLE. after that uimplement the insert from addtouser
-      const pokedexResponse = await axios.get(`http://localhost:3000/get-pokemon-by-name/${selectedPokemonName}`);
-      const matchedPokemon = pokedexResponse.data[0]; // Assuming there's only one match. pokemon name
-
-      //Now get pokemon name
-
-      const { data, error } = await supabase
+      //INSERT statement
+      const { error } = await supabase
                       .from('user_pokemon') //good
-                      .select('id')
-                      .insert({ user_id: 1, pokemon_id: 'Denmark' }) //replace 1 and denmark with user id and pokemon id
-                      .eq('user_id', user_id); // good
+                      .insert({ user_id: userId, pokemon_id: selectedPokemonId }) //replace 1 and denmark with user id and pokemon id
 
-      // Pass the matchedPokemon to the parent component (App.js)
-      props.onSelect({ pokemonData, matchedPokemon, speciesData }); //sends to handleselect on page
-      addToUserCollection(matchedPokemon, pokemonData, speciesData); //sends to addtouser collection
-
-      setUserPokemon([...userPokemon, pokemonData]); // Add new Pokémon data to the state
-      setUserSpecies([...userSpecies, speciesData]); // Add new species data to the state
+      //just figure out how to
+      setUserPokemon([...userPokemon, selectedPokemonData]); // Add new Pokémon data to the state
+      setUserSpecies([...userSpecies, selectedSpeciesData]); // Add new species data to the state
     } catch (error) {
-      console.error('Error fetching Pokemon data from pokedex:', error);
+      console.error('Error inserting Pokemon data into user_pokemon:', error);
     }
   } catch (error) {
     console.error('Error fetching Pokemon data:', error);
   }
   setShowDropdown(false);
-
-  //add pokemon to collection
-  //addToUserCollection(matchedPokemon, pokemonData, speciesData);
 };
-
-/*
-const addToUserCollection = (request, response) => {
-   const { username, pokemonName } = request.body;
-
-   // First, get the user_id based on the username
-   const getUserQuery = 'SELECT id FROM users WHERE username = $1';
-
-   pool.query(getUserQuery, [username], async (error, results) => {
-     if (error) {
-       throw error;
-     }
-
-     try {
-       const userId = results.rows[0].id;
-
-       const pokemonNameStr = pokemonName.pokemon;
-
-       // Use this information to add the Pokemon to the user's collection in the database.
-       // Perform the necessary database operations here.
-
-       const insertQuery = `
-         INSERT INTO user_pokemon (user_id, pokemon_id)
-         VALUES ($1, (SELECT id FROM pokedex WHERE pokemon = $2))
-       `;
-
-       console.log('userId:', userId);
-       console.log('pokemonName:', pokemonNameStr);
-
-       await pool.query(insertQuery, [userId, pokemonNameStr]);
-       response.status(200).send('Added to user collection');
-     } catch (error) {
-       throw error;
-     }
-   });
- }
-*/
 
   function openModal(index) {
     setIsOpen(true);
@@ -301,9 +176,6 @@ const addToUserCollection = (request, response) => {
   const togglePopup = () => {
     setShowPopup(!showPopup);
   };
-
-
-///////
 
   const Popup = () => {
     return (

@@ -323,7 +323,7 @@ const addPokemon = async (request, response) => {
 const addToUserCollection = (request, response) => {
    const { username, pokemonName } = request.body;
 
-   // First, get the user_id based on the username
+   // First, get the user_id based on the username (not necessary because we have the id already
    const getUserQuery = 'SELECT id FROM users WHERE username = $1';
 
    pool.query(getUserQuery, [username], async (error, results) => {
@@ -347,10 +347,10 @@ const addToUserCollection = (request, response) => {
                 .eq('user_id', user_id); // good
 
        const insertQuery = `
-         INSERT INTO user_pokemon (user_id, pokemon_id)
-         VALUES ($1, (SELECT id FROM pokedex WHERE pokemon = $2))
+         INSERT INTO user_pokemon (user_id, pokemon_id) //insert user_id and pokemon_id into user_pokemon table.
+         VALUES ($1, (SELECT id FROM pokedex WHERE pokemon = $2)) //user_id (given) and pokemon_id where (given) pokemon name
        `;
-
+        //values: user_id (given) and pokemon_id (take from api
        console.log('userId:', userId);
        console.log('pokemonName:', pokemonNameStr);
 
