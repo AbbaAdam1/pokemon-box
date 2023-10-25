@@ -27,7 +27,7 @@ const PokemonTrainer = () => {
   const [loading1, setLoading1] = useState(true);
   const [modalIsOpen, setIsOpen] = React.useState(false);
   const [showPopup, setShowPopup] = useState(false);
-  const [userPokemonNames, setUserPokemonNames] = useState([]);
+  //const [userPokemonNames, setUserPokemonNames] = useState([]);
   const [userPokemon, setUserPokemon] = useState([]);
   const [fetchError, setFetchError] = useState(null);
   const [userSpecies, setUserSpecies] = useState([]);
@@ -68,8 +68,9 @@ useEffect(() => {
 
             if (data) {
               //console.log(data)
-              const namesArray = data.map(obj => obj.pokemon);
-              setUserPokemonNames(namesArray);
+              //const namesArray = data.map(obj => obj.pokemon);
+              //setUserPokemonNames(namesArray);
+              const userPokemonNames = data.map(obj => obj.pokemon);
               //console.log(namesArray)
               //console.log(userPokemonNames)
               setFetchError(null)
@@ -82,7 +83,7 @@ useEffect(() => {
         // Create empty arrays to store Pokemon data and species data
         const fetchedPokemonData = [];
         const fetchedSpeciesData = [];
-        console.log(userPokemonNames)
+        //console.log(userPokemonNames)
 
 
         // Assuming userPokemonNames is an array
