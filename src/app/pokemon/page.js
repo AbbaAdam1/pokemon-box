@@ -52,8 +52,8 @@ useEffect(() => {
     WHERE up.user_id = $1
 */    //this should return an array of names
       const { data, error } = await supabase
-            .from('pokedex') //good
-            .select('pokemon, user_pokemon(*)'); //not sure
+            .from('user_pokemon') //good
+            .select('pokemon'); //not sure
             //.eq('user_pokemon.pokemon', userId); // good
       /*
             .from('user_pokemon')
@@ -62,13 +62,16 @@ useEffect(() => {
       */
             if (error) {
               setFetchError('Could not fetch Pokemon')
-              setUserPokemonNames(null)
+              //setUserPokemonNames(null)
               console.log(error)
             }
 
             if (data) {
-              console.log(data)
-              setUserPokemonNames(data)
+              //console.log(data)
+              const namesArray = data.map(obj => obj.pokemon);
+              setUserPokemonNames(namesArray);
+              //console.log(namesArray)
+              //console.log(userPokemonNames)
               setFetchError(null)
             }
       try {
@@ -79,6 +82,8 @@ useEffect(() => {
         // Create empty arrays to store Pokemon data and species data
         const fetchedPokemonData = [];
         const fetchedSpeciesData = [];
+        console.log(userPokemonNames)
+
 
         // Assuming userPokemonNames is an array
         for (const pokemonName of userPokemonNames) {
@@ -111,6 +116,11 @@ useEffect(() => {
 
     fetchUserPokemonData();
   }, []);
+
+useEffect(() => {
+  console.log("userPokemonNames in useEffect:", userPokemon);
+  // Additional code that relies on userPokemonNames goes here
+}, [userPokemon]);
 
 
   const handleSelect = ({ pokemonData, matchedPokemon, speciesData }) => {
