@@ -16,15 +16,49 @@ const customStyles = {
 
 //Modal.setAppElement('#root'); // Ensure it's accessible by screen readers
 
-const Modals = ({ isOpen, closeModal, pokemon, species, userPokemonId, userId, pokemonId, index }) => {
+const Modals = ({ isOpen, closeModal, pokemon, species, userId, pokemonId, index }) => {
   let subtitle;
-  //const [userPokemonId, setUserPokemonId] = useState(null);
+  const [userPokemonId, setUserPokemonId] = useState(null);
   console.log(index)
 
   function afterOpenModal() {
     // references are now sync'd and can be accessed.
     subtitle.style.color = '#f00';
   }
+
+  useEffect(() => {
+      const fetchUserPokemonById = async () => {
+          console.log('testing userId id:', userId);
+          console.log('testing pokemonId id:', pokemonId);
+          try {
+            //const user_id = userId; // Get user_id from userId
+            //const pokemonId = userPokemon[index].id; // Get pokemon_id from userPokemon[index]
+            //console.log('testing user id:', user_id);
+            //console.log('testing pokemon id:', pokemon_id);
+
+            //const response = await axios.get(`http://localhost:3000/api/getUserPokemonById/${userId}/${pokemonId}`
+            const { data, error } = await supabase
+                             .from('user_pokemon') //good
+                             .select('id')
+                             .eq({userId, pokemonId });
+                             //.eq({ user_id: userId, pokemon_id: pokemonId });
+
+            //const userPokemonIdFromResponse = response.data[0].id;
+            setUserPokemonId(data);
+            console.log('testing userpokemon id:', userPokemonId);
+          } catch (error) {
+            console.error('Error fetching user_pokemon IDs:', error);
+          }
+      };
+
+      fetchUserPokemonById();
+  }, []);
+
+  useEffect(() => {
+    console.log("userPokemonId in useEffect:", userPokemonId);
+    console.log("index test:", userPokemonId[index])
+    // Additional code that relies on userPokemonNames goes here
+  }, [userPokemonId]);
 /*
   function openModal(index) {
     setIsOpen(true);
@@ -37,7 +71,7 @@ const Modals = ({ isOpen, closeModal, pokemon, species, userPokemonId, userId, p
   }
 */
   const deleteFromUserCollection = async () => {
-    console.log(userPokemonId)
+    console.log("index test:", userPokemonId)
     //const testuserId = parseInt(userId)
     //console.log(testuserId)
     //console.log(pokemonId)

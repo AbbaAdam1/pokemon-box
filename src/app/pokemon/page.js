@@ -235,7 +235,7 @@ const THIShandleSelect = async (e) => {
                     species={userSpecies[index]}
                     userId={userId}
                     pokemonId={pokemonData.id}
-                    userPokemonId={userPokemonId}
+                   // userPokemonId={userPokemonId}
                     index={index}
                   />
                 )}
