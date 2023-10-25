@@ -66,7 +66,7 @@ useEffect(() => {
               console.log(error)
             }
 
-            if (data) {
+            //if (data) {
               //console.log(data)
               //const namesArray = data.map(obj => obj.pokemon);
               //setUserPokemonNames(namesArray);
@@ -74,8 +74,8 @@ useEffect(() => {
               //console.log(namesArray)
               //console.log(userPokemonNames)
               setFetchError(null)
-            }
-      try {
+            //}
+      //try {
         setLoading1(true);
 
         //const userPokemonNames = response.data;
@@ -107,11 +107,11 @@ useEffect(() => {
         setUserPokemon(fetchedPokemonData);
         setUserSpecies(fetchedSpeciesData);
 
-      } catch (error) {
-        console.error('Error fetching Pokémon details data:', error);
-      } finally {
+     // } catch (error) {
+      //  console.error('Error fetching Pokémon details data:', error);
+      //} finally {
         setLoading1(false); // Set loading to false when fetch is complete
-      }
+      //}
 
     };
 
@@ -178,7 +178,7 @@ const NEWhandleSelect = async (e) => {
   function openModal(index) {
     setIsOpen(true);
     setSelectedPokemonIndex(index);
-    fetchUserPokemonById(index);
+    //fetchUserPokemonById(index);
   }
 
   function closeModal() {
@@ -200,7 +200,7 @@ const NEWhandleSelect = async (e) => {
 
   return (
     <div>
-      <Dropdown onSelect={handleSelect}/>
+      <Dropdown onSelect={NEWhandleSelect}/>
       <div className="pokemon-container">
         <div className="background-image">
           <img
