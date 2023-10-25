@@ -176,6 +176,7 @@ const THIShandleSelect = async (e) => {
   setShowDropdown(false);
 };
 
+  //maybe move thse modal functions to the modal componennt. compare to dropdown if it helps
   function openModal(index) {
     setIsOpen(true);
     setSelectedPokemonIndex(index);
@@ -235,6 +236,7 @@ const THIShandleSelect = async (e) => {
                     userId={userId}
                     pokemonId={pokemonData.id}
                     userPokemonId={userPokemonId}
+                    index={index}
                   />
                 )}
               </div>

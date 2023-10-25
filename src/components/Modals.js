@@ -16,15 +16,26 @@ const customStyles = {
 
 //Modal.setAppElement('#root'); // Ensure it's accessible by screen readers
 
-const Modals = ({ isOpen, closeModal, pokemon, species, userPokemonId, userId, pokemonId }) => {
+const Modals = ({ isOpen, closeModal, pokemon, species, userPokemonId, userId, pokemonId, index }) => {
   let subtitle;
   //const [userPokemonId, setUserPokemonId] = useState(null);
+  console.log(index)
 
   function afterOpenModal() {
     // references are now sync'd and can be accessed.
     subtitle.style.color = '#f00';
   }
+/*
+  function openModal(index) {
+    setIsOpen(true);
+    setSelectedPokemonIndex(index);
+    //fetchUserPokemonById(index);
+  }
 
+  function closeModal() {
+    setIsOpen(false);
+  }
+*/
   const deleteFromUserCollection = async () => {
     console.log(userPokemonId)
     //const testuserId = parseInt(userId)
