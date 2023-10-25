@@ -47,7 +47,7 @@ const Dropdown = (props) => {
         //INSERT statement
         const { error } = await supabase
                         .from('user_pokemon') //good
-                        .insert({ user_id: userId, pokemon_id: selectedPokemonId }) //replace 1 and denmark with user id and pokemon id
+                        .insert({ user_id: userId, pokemon_id: selectedPokemonId, pokemon: selectedPokemonName }) //replace 1 and denmark with user id and pokemon id
 
         setUserPokemon([...userPokemon, selectedPokemonData]); // Add new Pokémon data to the state
         setUserSpecies([...userSpecies, selectedSpeciesData]); // Add new species data to the state

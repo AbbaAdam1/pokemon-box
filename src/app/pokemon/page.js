@@ -50,11 +50,11 @@ useEffect(() => {
     FROM user_pokemon up
     JOIN pokedex p ON up.pokemon_id = p.id
     WHERE up.user_id = $1
-*/
+*/    //this should return an array of names
       const { data, error } = await supabase
-            .from('user_pokemon') //good
-            .select('pokemon_id(id:user_pokemon(id))') //not sure
-            .eq('user_id', user_id); // good
+            .from('pokedex') //good
+            .select('pokemon, user_pokemon(*)'); //not sure
+            //.eq('user_pokemon.pokemon', userId); // good
       /*
             .from('user_pokemon')
             .select('pokemon_id(id:user_pokemon(id))')
@@ -67,6 +67,7 @@ useEffect(() => {
             }
 
             if (data) {
+              console.log(data)
               setUserPokemonNames(data)
               setFetchError(null)
             }
