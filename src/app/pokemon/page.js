@@ -53,7 +53,8 @@ useEffect(() => {
 */    //this should return an array of names
       const { data, error } = await supabase
             .from('user_pokemon') //good
-            .select('pokemon'); //not sure
+            .select('pokemon')
+            .eq('user_id', userId); //not sure
             //.eq('user_pokemon.pokemon', userId); // good
       /*
             .from('user_pokemon')
@@ -138,7 +139,7 @@ useEffect(() => {
     addToUserCollection(matchedPokemon, pokemonData, speciesData);
   };
 
-const NEWhandleSelect = async (e) => {
+const THIShandleSelect = async (e) => {
   const selectedPokemonName = e.target.value; //NEEDED
   //PASS PROPS AS YOU DID BEFORE
 
@@ -200,7 +201,11 @@ const NEWhandleSelect = async (e) => {
 
   return (
     <div>
-      <Dropdown onSelect={NEWhandleSelect}/>
+      <Dropdown onSelect={THIShandleSelect}
+                      setUserPokemon={setUserPokemon}
+                      setUserSpecies={setUserSpecies}
+                      userPokemon={userPokemon}
+                      userSpecies={userSpecies} />
       <div className="pokemon-container">
         <div className="background-image">
           <img

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import axios from 'axios';
+import supabase from "src/config/supabaseClient"
 
 const customStyles = {
   content: {
@@ -26,15 +27,21 @@ const Modals = ({ isOpen, closeModal, pokemon, species, userPokemonId, userId, p
 
   const deleteFromUserCollection = async () => {
     console.log(userPokemonId)
-    const testuserId = parseInt(userId)
-    console.log(testuserId)
-    console.log(pokemonId)
-    try {
-      const response = await axios.delete(`http://localhost:3000/api/deleteUserPokemon/${userPokemonId}/${userId}/${pokemonId}`);
-      console.log('Deleted Pokemon:', response.data);
-    } catch (error) {
-      console.error('Error deleting Pokemon:', error);
-    }
+    //const testuserId = parseInt(userId)
+    //console.log(testuserId)
+    //console.log(pokemonId)
+    const { error } = await supabase
+                .from('user_pokemon') //good
+                .delete()
+                .eq('id', userPokemonId);
+                //.eq('id', index);
+                //.eq({ id: userPokemonId, user_id: userId, pokemon_id: pokemonId });
+    //try {
+    //  const response = await axios.delete(`http://localhost:3000/api/deleteUserPokemon/${userPokemonId}/${userId}/${pokemonId}`);
+    //  console.log('Deleted Pokemon:', response.data);
+    //} catch (error) {
+    //  console.error('Error deleting Pokemon:', error);
+    //}
   };
   return (
     <Modal

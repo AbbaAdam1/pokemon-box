@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import supabase from "src/config/supabaseClient"
 
 const Dropdown = (props) => {
   const [pokemonList, setPokemonList] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
+  const userId = 'a7b8bad1-ac99-41fc-a9a2-b62a4dfd8418';
 
 
   useEffect(() => {
@@ -36,7 +38,7 @@ const Dropdown = (props) => {
       const selectedPokemonData = response.data; //pokemon api data
       const selectedSpeciesData = speciesResponse.data; //species api data
 
-      const selectedPokemonId = pokemonData.id;
+      const selectedPokemonId = selectedPokemonData.id;
 
       //setPokemon(selectedPokemonData);
       //setSpecies(selectedSpeciesData);
@@ -49,8 +51,10 @@ const Dropdown = (props) => {
                         .from('user_pokemon') //good
                         .insert({ user_id: userId, pokemon_id: selectedPokemonId, pokemon: selectedPokemonName }) //replace 1 and denmark with user id and pokemon id
 
-        setUserPokemon([...userPokemon, selectedPokemonData]); // Add new Pokémon data to the state
-        setUserSpecies([...userSpecies, selectedSpeciesData]); // Add new species data to the state
+        //setUserPokemon([...userPokemon, selectedPokemonData]); // Add new Pokémon data to the state
+        //setUserSpecies([...userSpecies, selectedSpeciesData]); // Add new species data to the state
+        props.setUserPokemon([...props.userPokemon, selectedPokemonData]);
+        props.setUserSpecies([...props.userSpecies, selectedSpeciesData]);
       } catch (error) {
         console.error('Error inserting Pokemon data into user_pokemon:', error);
       }
@@ -71,7 +75,7 @@ const Dropdown = (props) => {
         //when dropdown gets selected, it shows a list of pokemon
           <label htmlFor="Dropdown">Choose a Pokemon:</label>
           //activates handle select on dropdown when option is selected
-          <select id="Dropdown" onChange={handleSelect}>
+          <select id="Dropdown" onChange={NEWhandleSelect}>
             {pokemonList.map(pokemon => (
               <option key={pokemon.name} value={pokemon.name}>
                 {pokemon.name}
