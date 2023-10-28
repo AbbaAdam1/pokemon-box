@@ -16,7 +16,6 @@ import { useRouter } from 'next/router';
 import supabase from "src/config/supabaseClient"
 import Modals from 'src/components/Modals'
 import Dropdown from 'src/components/Dropdown';
-//import getUserPokemon from 'src/components/getUserPokemon'; // Adjust the path as needed
 
 //import { AuthContextProvider } from '../context/AuthContext'
 
@@ -122,6 +121,11 @@ useEffect(() => {
 useEffect(() => {
   console.log("userPokemonNames in useEffect:", userPokemon);
   // Additional code that relies on userPokemonNames goes here
+}, []);
+
+useEffect(() => {
+  console.log("userPokemonNames in useEffect:", userPokemon);
+  // Additional code that relies on userPokemonNames goes here
 }, [userPokemon]);
 
 
@@ -167,6 +171,9 @@ const THIShandleSelect = async (e) => {
       //just figure out how to
       setUserPokemon([...userPokemon, selectedPokemonData]); // Add new Pokémon data to the state
       setUserSpecies([...userSpecies, selectedSpeciesData]); // Add new species data to the state
+
+      const lengthOfUserPokemon = userPokemon.length;
+
     } catch (error) {
       console.error('Error inserting Pokemon data into user_pokemon:', error);
     }

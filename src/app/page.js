@@ -23,6 +23,9 @@ export default async function Home() {
       <Link className="button" href="/profile">
         Go to Profile
       </Link>
+      <Link className="button" href="/cookies">
+        Go to Box
+      </Link>
       <SignOut />
     </div>
   );

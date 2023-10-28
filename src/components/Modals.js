@@ -19,12 +19,17 @@ const customStyles = {
 const Modals = ({ isOpen, closeModal, pokemon, species, userId, pokemonId, index }) => {
   let subtitle;
   const [userPokemonId, setUserPokemonId] = useState(null);
-  console.log(index)
+  //console.log(index)
 
   function afterOpenModal() {
     // references are now sync'd and can be accessed.
     subtitle.style.color = '#f00';
   }
+
+  useEffect(() => {
+    console.log("pokemonId in useEffect:", pokemonId);
+    // Additional code that relies on userPokemonNames goes here
+  }, [pokemonId]);
 
   useEffect(() => {
       const fetchUserPokemonById = async () => {
@@ -45,7 +50,7 @@ const Modals = ({ isOpen, closeModal, pokemon, species, userId, pokemonId, index
 
             //const userPokemonIdFromResponse = response.data[0].id;
             setUserPokemonId(data);
-            console.log('testing userpokemon id:', userPokemonId);
+            //console.log('testing userpokemon id:', userPokemonId);
           } catch (error) {
             console.error('Error fetching user_pokemon IDs:', error);
           }
@@ -54,11 +59,6 @@ const Modals = ({ isOpen, closeModal, pokemon, species, userId, pokemonId, index
       fetchUserPokemonById();
   }, []);
 
-  useEffect(() => {
-    console.log("userPokemonId in useEffect:", userPokemonId);
-    console.log("index test:", userPokemonId[index])
-    // Additional code that relies on userPokemonNames goes here
-  }, [userPokemonId]);
 /*
   function openModal(index) {
     setIsOpen(true);
@@ -71,14 +71,11 @@ const Modals = ({ isOpen, closeModal, pokemon, species, userId, pokemonId, index
   }
 */
   const deleteFromUserCollection = async () => {
-    console.log("index test:", userPokemonId)
-    //const testuserId = parseInt(userId)
-    //console.log(testuserId)
-    //console.log(pokemonId)
+    //console.log("index test:", userPokemonId)
     const { error } = await supabase
                 .from('user_pokemon') //good
                 .delete()
-                .eq('id', userPokemonId);
+                .eq('pokemon_id', pokemonId);
                 //.eq('id', index);
                 //.eq({ id: userPokemonId, user_id: userId, pokemon_id: pokemonId });
     //try {

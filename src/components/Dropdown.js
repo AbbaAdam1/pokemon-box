@@ -12,57 +12,85 @@ const Dropdown = (props) => {
     const fetchPokemonData = async () => {
       try {
         const response = await axios.get('https://pokeapi.co/api/v2/pokemon?limit=151');
-        setPokemonList(response.data.results);
-        //console.error('api');
+        const pokemonData = response.data.results;
+        const updatedPokemonList = [''].concat(pokemonData); // Add empty value at the beginning
+        setPokemonList(updatedPokemonList);
       } catch (error) {
         console.error('Error fetching Pokemon data:', error);
       }
     };
-
-    fetchPokemonData();
+    fetchPokemonData(); // Call the function
   }, []);
+
 
   const toggleDropdown = () => {
     setShowDropdown(!showDropdown);
   };
 ////////////////////////////////////////////////////////////////////////////////////////////
-  const NEWhandleSelect = async (e) => {
-    const selectedPokemonName = e.target.value; //NEEDED
-    //PASS PROPS AS YOU DID BEFORE
+const NEWhandleSelect = async (e) => {
+  const selectedPokemonName = e.target.value; //NEEDED
 
-    try {
-      //selects pokemon and passes pokemon/species data
-      //NECESSARY BELOW
-      const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${selectedPokemonName}`);
-      const speciesResponse = await axios.get(`https://pokeapi.co/api/v2/pokemon-species/${selectedPokemonName}`);
-      const selectedPokemonData = response.data; //pokemon api data
-      const selectedSpeciesData = speciesResponse.data; //species api data
+  try {
+    //selects pokemon and passes pokemon/species data
+    const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${selectedPokemonName}`);
+    const speciesResponse = await axios.get(`https://pokeapi.co/api/v2/pokemon-species/${selectedPokemonName}`);
+    const selectedPokemonData = response.data; //pokemon api data
+    const selectedSpeciesData = speciesResponse.data; //species api data
 
-      const selectedPokemonId = selectedPokemonData.id;
+    const selectedPokemonId = selectedPokemonData.id;
 
-      //setPokemon(selectedPokemonData);
-      //setSpecies(selectedSpeciesData);
-      //NECESSARY ABOVE
+    const isDuplicate = props.userPokemon.some(pokemon => pokemon.name === selectedPokemonName);
 
+    if (isDuplicate) {
+      console.log('User already has this Pokémon');
+    } else if (props.userPokemon.length <= 13) {
       try {
-        //this is to get the name. you can probably just get the name from pokemonData so probably not necessary
-        //INSERT statement
         const { error } = await supabase
-                        .from('user_pokemon') //good
-                        .insert({ user_id: userId, pokemon_id: selectedPokemonId, pokemon: selectedPokemonName }) //replace 1 and denmark with user id and pokemon id
+          .from('user_pokemon')
+          .insert({ user_id: userId, pokemon_id: selectedPokemonId, pokemon: selectedPokemonName });
 
-        //setUserPokemon([...userPokemon, selectedPokemonData]); // Add new Pokémon data to the state
-        //setUserSpecies([...userSpecies, selectedSpeciesData]); // Add new species data to the state
-        props.setUserPokemon([...props.userPokemon, selectedPokemonData]);
-        props.setUserSpecies([...props.userSpecies, selectedSpeciesData]);
+        if (!error) {
+          props.setUserPokemon([...props.userPokemon, selectedPokemonData]);
+          props.setUserSpecies([...props.userSpecies, selectedSpeciesData]);
+        } else {
+          console.error('Error inserting Pokemon data into user_pokemon:', error);
+        }
       } catch (error) {
         console.error('Error inserting Pokemon data into user_pokemon:', error);
       }
-    } catch (error) {
-      console.error('Error fetching Pokemon data:', error);
+    } else {
+      console.log('User already has 8 or more Pokemon');
     }
-    setShowDropdown(false);
-  };
+  } catch (error) {
+    console.error('Error fetching Pokemon data:', error);
+  }
+
+  setShowDropdown(false);
+}
+
+
+  /*
+        try {
+          //this is to get the name. you can probably just get the name from pokemonData so probably not necessary
+          //INSERT statement
+          const { error } = await supabase
+                          .from('user_pokemon') //good
+                          .insert({ user_id: userId, pokemon_id: selectedPokemonId, pokemon: selectedPokemonName }) //replace 1 and denmark with user id and pokemon id
+
+          //setUserPokemon([...userPokemon, selectedPokemonData]); // Add new Pokémon data to the state
+          //setUserSpecies([...userSpecies, selectedSpeciesData]); // Add new species data to the state
+          props.setUserPokemon([...props.userPokemon, selectedPokemonData]);
+          props.setUserSpecies([...props.userSpecies, selectedSpeciesData]);
+        } catch (error) {
+          console.error('Error inserting Pokemon data into user_pokemon:', error);
+        }
+      } catch (error) {
+        console.error('Error fetching Pokemon data:', error);
+      }
+  */
+
+  //setShowDropdown(false);
+  //};
 
 
   return (

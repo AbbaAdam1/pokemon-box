@@ -1,3 +1,7 @@
 {
-  "/pokemon/page": "app/pokemon/page.js"
+  "/page": "app/page.js",
+  "/sign-in/page": "app/sign-in/page.js",
+  "/reset-password/page": "app/reset-password/page.js",
+  "/update-password/page": "app/update-password/page.js",
+  "/profile/page": "app/profile/page.js"
 }
