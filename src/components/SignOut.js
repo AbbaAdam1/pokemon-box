@@ -11,7 +11,6 @@ export default function SignOut() {
     const { error } = await supabase.auth.signOut();
 
     if (error) {
-      // eslint-disable-next-line no-console
       console.error('ERROR:', error);
     } else {
       router.push('/sign-in');
