@@ -21,7 +21,6 @@ const SignUp = () => {
     const { error } = await supabase.auth.signUp({
       email: formData.email,
       password: formData.password,
-      // redirectTo: `${window.location.origin}/auth/callback`,
     });
 
     if (error) {

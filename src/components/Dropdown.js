@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import supabase from "src/config/supabaseClient"
+import {
+  fetchUserPokemonData,
+  fetchUID,
+  openModal,
+  closeModal
+} from './pokemonHelpers';
 
 const Dropdown = (props) => {
   const [pokemonList, setPokemonList] = useState([]);
@@ -11,6 +17,7 @@ const Dropdown = (props) => {
     setErrorMessage(null);
   };
 
+  //fetch dropdown list of pokemon
   useEffect(() => {
     const fetchPokemonData = async () => {
       try {
@@ -29,7 +36,8 @@ const Dropdown = (props) => {
     setShowDropdown(!showDropdown);
   };
 
-  const NEWhandleSelect = async (e) => {
+  //inserts pokemon
+  const handleSelect = async (e) => {
     const selectedPokemonName = e.target.value;
 
     try {
@@ -77,7 +85,7 @@ const Dropdown = (props) => {
       {showDropdown && (
         <div className="pt-5 pb-5">
           <label htmlFor="Dropdown">Choose a Pokémon:</label>
-          <select id="Dropdown" onChange={NEWhandleSelect}>
+          <select id="Dropdown" onChange={handleSelect}>
             {pokemonList.map((pokemon, index) => (
               <option key={index} value={pokemon.name}>
                 {pokemon.name && pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}
