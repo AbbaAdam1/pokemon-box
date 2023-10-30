@@ -14,101 +14,95 @@ const customStyles = {
   },
 };
 
-//Modal.setAppElement('#root'); // Ensure it's accessible by screen readers
+Modal.setAppElement('#root');
 
 const Modals = ({ isOpen, closeModal, pokemon, species, userId, pokemonId, index }) => {
   let subtitle;
   const [userPokemonId, setUserPokemonId] = useState(null);
-  //console.log(index)
+  const [flavorTextEn, setFlavorTextEn] = useState(null);
 
-  function afterOpenModal() {
-    // references are now sync'd and can be accessed.
-    subtitle.style.color = '#f00';
-  }
+const typeImages = {
+  normal: 'types/normal.png',
+  fire: 'types/fire.png',
+  water: 'types/water.png',
+  electric: 'types/electric.png',
+  grass: 'types/grass.png',
+  ice: 'types/ice.png',
+  fighting: 'types/fighting.png',
+  poison: 'types/poison.png',
+  ground: 'types/ground.png',
+  flying: 'types/flying.png',
+  psychic: 'types/psychic.png',
+  bug: 'types/bug.png',
+  rock: 'types/rock.png',
+  ghost: 'types/ghost.png',
+  steel: 'types/steel.png',
+  fairy: 'types/fairy.png',
+  dark: 'types/dark.png',
+  dragon: 'types/dragon.png',
+  // Add more types and their corresponding image paths as needed
+};
 
   useEffect(() => {
-    console.log("pokemonId in useEffect:", pokemonId);
-    // Additional code that relies on userPokemonNames goes here
-  }, [pokemonId]);
+    // Find the entry with language "en" and extract the flavor text
+    for (const entry of species.flavor_text_entries) {
+      if (entry.language.name === "en") {
+        setFlavorTextEn(entry.flavor_text);
+        break;
+      }
+    }
+  }, [species]);
 
-  useEffect(() => {
-      const fetchUserPokemonById = async () => {
-          console.log('testing userId id:', userId);
-          console.log('testing pokemonId id:', pokemonId);
-          try {
-            //const user_id = userId; // Get user_id from userId
-            //const pokemonId = userPokemon[index].id; // Get pokemon_id from userPokemon[index]
-            //console.log('testing user id:', user_id);
-            //console.log('testing pokemon id:', pokemon_id);
-
-            //const response = await axios.get(`http://localhost:3000/api/getUserPokemonById/${userId}/${pokemonId}`
-            const { data, error } = await supabase
-                             .from('user_pokemon') //good
-                             .select('id')
-                             .eq({userId, pokemonId });
-                             //.eq({ user_id: userId, pokemon_id: pokemonId });
-
-            //const userPokemonIdFromResponse = response.data[0].id;
-            setUserPokemonId(data);
-            //console.log('testing userpokemon id:', userPokemonId);
-          } catch (error) {
-            console.error('Error fetching user_pokemon IDs:', error);
-          }
-      };
-
-      fetchUserPokemonById();
-  }, []);
-
-/*
-  function openModal(index) {
-    setIsOpen(true);
-    setSelectedPokemonIndex(index);
-    //fetchUserPokemonById(index);
-  }
-
-  function closeModal() {
-    setIsOpen(false);
-  }
-*/
   const deleteFromUserCollection = async () => {
-    //console.log("index test:", userPokemonId)
     const { error } = await supabase
-                .from('user_pokemon') //good
+                .from('user_pokemon')
                 .delete()
                 .eq('pokemon_id', pokemonId);
-                //.eq('id', index);
-                //.eq({ id: userPokemonId, user_id: userId, pokemon_id: pokemonId });
-    //try {
-    //  const response = await axios.delete(`http://localhost:3000/api/deleteUserPokemon/${userPokemonId}/${userId}/${pokemonId}`);
-    //  console.log('Deleted Pokemon:', response.data);
-    //} catch (error) {
-    //  console.error('Error deleting Pokemon:', error);
-    //}
   };
-  return (
-    <Modal
-      isOpen={isOpen}
-      onAfterOpen={afterOpenModal}
-      onRequestClose={closeModal}
-      style={customStyles}
-      contentLabel="Pokemon Modal"
-    >
-      <h2 ref={(_subtitle) => (subtitle = _subtitle)}>#{pokemon.id} {pokemon.name}</h2>
-      <button className="absolute top-0 right-2" onClick={closeModal}>X</button>
-      <img
-         src={pokemon.sprites.other['official-artwork'].front_default}
-         alt={pokemon.name}
-      />
-      <p>{species.flavor_text_entries[0].flavor_text}</p>
-      <p>Primary type: {pokemon.types[0].type.name}</p>
-      {pokemon.types[1] && <p>Secondary type: {pokemon.types[1].type.name}</p>}
 
-      <form>
-        <input />
-        <button onClick={deleteFromUserCollection}>Release Pokemon</button>
-      </form>
-    </Modal>
-  );
-};
+  return (
+      <Modal
+        isOpen={isOpen}
+        onRequestClose={closeModal}
+        style={{
+          overlay: {
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          },
+          content: {
+            ...customStyles.content,
+            animation: 'fadein 0.3s',
+          },
+        }}
+        contentLabel="Pokemon Modal"
+      >
+
+        <div className="container mx-auto">
+          <h2 className="text-xl font-bold mb-4">#{pokemon.id}: {pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}</h2>
+          <button className="absolute top-2 right-2 pt-3 pr-3 text-red-600 font-bold text-xl" onClick={closeModal}>X</button>
+          <div className="flex justify-center items-center">
+            <img
+              src={pokemon.sprites.other['official-artwork'].front_default}
+              alt={pokemon.name}
+              style={{ width: '400px', height: '400px' }}
+            />
+          </div>
+          <p className="mb-4">{flavorTextEn || 'Flavor text not available in English.'}</p>
+          <div className="mb-4 flex flex-col items-center">
+            <p className="mb-2 mr-1">Type:</p>
+            <div className="flex">
+              <img className="mr-2" src={typeImages[pokemon.types[0].type.name]} alt={pokemon.name} />
+              {pokemon.types[1] && <img src={typeImages[pokemon.types[1].type.name]} alt={pokemon.name} />}
+            </div>
+          </div>
+
+          <form className="text-center">
+            <button onClick={deleteFromUserCollection} className="focus:outline-none text-white bg-red-500 hover:bg-red-600 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2">
+              Release Pokemon
+            </button>
+          </form>
+        </div>
+      </Modal>
+    );
+  };
 
 export default Modals;

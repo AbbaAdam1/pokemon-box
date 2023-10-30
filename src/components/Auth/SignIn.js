@@ -31,7 +31,7 @@ const SignIn = () => {
     } else {
       // User signed in successfully, navigate to another page
       //router.push('/pokemon'); // Replace '/another-page' with the actual path
-      router.push('/cookies');
+      router.push('/profile');
     }
   }
 

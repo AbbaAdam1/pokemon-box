@@ -17,19 +17,15 @@ export default async function Profile() {
     redirect('/sign-in');
   }
 
+  //      <div className="heading">Last Signed In:</div>
+  //      <code className="highlight">{new Date(user.last_sign_in_at).toUTCString()}</code>
+
   return (
     <div className="card">
-      <h2>User Profile</h2>
+      <p className="text-2xl font-bold">User Profile</p>
       <code className="highlight">{user.email}</code>
-      <div className="heading">Last Signed In:</div>
-      <code className="highlight">{new Date(user.last_sign_in_at).toUTCString()}</code>
-      <Link className="button" href="/">
-        Go to Home
-      </Link>
-      <PokemonTrainer user={user} />
-      <Link className="button" href="/cookies">
-        Go to Box
-      </Link>
+      <PokemonTrainer user={user}/>
+
       <SignOut />
     </div>
   );

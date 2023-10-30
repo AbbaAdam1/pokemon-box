@@ -5,111 +5,91 @@ import supabase from "src/config/supabaseClient"
 const Dropdown = (props) => {
   const [pokemonList, setPokemonList] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
-  const userId = 'a7b8bad1-ac99-41fc-a9a2-b62a4dfd8418';
+  const [errorMessage, setErrorMessage] = useState(null);
 
+  const clearErrorMessage = () => {
+    setErrorMessage(null);
+  };
 
   useEffect(() => {
     const fetchPokemonData = async () => {
       try {
         const response = await axios.get('https://pokeapi.co/api/v2/pokemon?limit=151');
         const pokemonData = response.data.results;
-        const updatedPokemonList = [''].concat(pokemonData); // Add empty value at the beginning
+        const updatedPokemonList = [''].concat(pokemonData);
         setPokemonList(updatedPokemonList);
       } catch (error) {
         console.error('Error fetching Pokemon data:', error);
       }
     };
-    fetchPokemonData(); // Call the function
+    fetchPokemonData();
   }, []);
-
 
   const toggleDropdown = () => {
     setShowDropdown(!showDropdown);
   };
-////////////////////////////////////////////////////////////////////////////////////////////
-const NEWhandleSelect = async (e) => {
-  const selectedPokemonName = e.target.value; //NEEDED
 
-  try {
-    //selects pokemon and passes pokemon/species data
-    const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${selectedPokemonName}`);
-    const speciesResponse = await axios.get(`https://pokeapi.co/api/v2/pokemon-species/${selectedPokemonName}`);
-    const selectedPokemonData = response.data; //pokemon api data
-    const selectedSpeciesData = speciesResponse.data; //species api data
+  const NEWhandleSelect = async (e) => {
+    const selectedPokemonName = e.target.value;
 
-    const selectedPokemonId = selectedPokemonData.id;
+    try {
+      const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${selectedPokemonName}`);
+      const speciesResponse = await axios.get(`https://pokeapi.co/api/v2/pokemon-species/${selectedPokemonName}`);
+      const selectedPokemonData = response.data;
+      const selectedSpeciesData = speciesResponse.data;
 
-    const isDuplicate = props.userPokemon.some(pokemon => pokemon.name === selectedPokemonName);
+      const selectedPokemonId = selectedPokemonData.id;
 
-    if (isDuplicate) {
-      console.log('User already has this Pokémon');
-    } else if (props.userPokemon.length <= 13) {
-      try {
-        const { error } = await supabase
-          .from('user_pokemon')
-          .insert({ user_id: userId, pokemon_id: selectedPokemonId, pokemon: selectedPokemonName });
+      const isDuplicate = props.userPokemon.some(pokemon => pokemon.name === selectedPokemonName);
 
-        if (!error) {
-          props.setUserPokemon([...props.userPokemon, selectedPokemonData]);
-          props.setUserSpecies([...props.userSpecies, selectedSpeciesData]);
-        } else {
-          console.error('Error inserting Pokemon data into user_pokemon:', error);
-        }
-      } catch (error) {
-        console.error('Error inserting Pokemon data into user_pokemon:', error);
-      }
-    } else {
-      console.log('User already has 8 or more Pokemon');
-    }
-  } catch (error) {
-    console.error('Error fetching Pokemon data:', error);
-  }
-
-  setShowDropdown(false);
-}
-
-
-  /*
+      if (isDuplicate) {
+        setErrorMessage('User already has this Pokémon');
+      } else if (props.userPokemon.length >= 24) {
+        setErrorMessage('User already has 24 or more Pokémon');
+      } else {
         try {
-          //this is to get the name. you can probably just get the name from pokemonData so probably not necessary
-          //INSERT statement
           const { error } = await supabase
-                          .from('user_pokemon') //good
-                          .insert({ user_id: userId, pokemon_id: selectedPokemonId, pokemon: selectedPokemonName }) //replace 1 and denmark with user id and pokemon id
+            .from('user_pokemon')
+            .insert({ user_id: props.userId, pokemon_id: selectedPokemonId, pokemon: selectedPokemonName });
 
-          //setUserPokemon([...userPokemon, selectedPokemonData]); // Add new Pokémon data to the state
-          //setUserSpecies([...userSpecies, selectedSpeciesData]); // Add new species data to the state
-          props.setUserPokemon([...props.userPokemon, selectedPokemonData]);
-          props.setUserSpecies([...props.userSpecies, selectedSpeciesData]);
+          if (!error) {
+            props.setUserPokemon([...props.userPokemon, selectedPokemonData]);
+            props.setUserSpecies([...props.userSpecies, selectedSpeciesData]);
+          } else {
+            setErrorMessage('Error inserting Pokemon data into user_pokemon');
+          }
         } catch (error) {
-          console.error('Error inserting Pokemon data into user_pokemon:', error);
+          setErrorMessage('Error inserting Pokemon data into user_pokemon');
         }
-      } catch (error) {
-        console.error('Error fetching Pokemon data:', error);
       }
-  */
+    } catch (error) {
+      setErrorMessage('Error fetching Pokemon data');
+    }
 
-  //setShowDropdown(false);
-  //};
-
+    setShowDropdown(false);
+  }
 
   return (
     <div>
-      <button onClick={toggleDropdown}>
-        Add
+      <button onClick={toggleDropdown} type="button" className="focus:outline-none text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700">
+        Deposit Pokémon
       </button>
       {showDropdown && (
-        <div>
-        //when dropdown gets selected, it shows a list of pokemon
-          <label htmlFor="Dropdown">Choose a Pokemon:</label>
-          //activates handle select on dropdown when option is selected
+        <div className="pt-5 pb-5">
+          <label htmlFor="Dropdown">Choose a Pokémon:</label>
           <select id="Dropdown" onChange={NEWhandleSelect}>
-            {pokemonList.map(pokemon => (
-              <option key={pokemon.name} value={pokemon.name}>
-                {pokemon.name}
+            {pokemonList.map((pokemon, index) => (
+              <option key={index} value={pokemon.name}>
+                {pokemon.name && pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}
               </option>
             ))}
           </select>
+        </div>
+      )}
+      {errorMessage && (
+        <div className="text-red-700">
+          {errorMessage}
+          <button onClick={clearErrorMessage} className="text-blue-700 underline ml-2">Dismiss</button>
         </div>
       )}
     </div>

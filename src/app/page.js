@@ -20,11 +20,9 @@ export default async function Home() {
     <div className="card">
       <h2>Welcome!</h2>
       <code className="highlight">{user.role}</code>
+      <code className="highlight">{user.email}</code>
       <Link className="button" href="/profile">
         Go to Profile
-      </Link>
-      <Link className="button" href="/cookies">
-        Go to Box
       </Link>
       <SignOut />
     </div>
