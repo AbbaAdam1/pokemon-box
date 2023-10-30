@@ -1,8 +1,4 @@
 {
-  "/reset-password/page": "app/reset-password/page.js",
   "/sign-in/page": "app/sign-in/page.js",
-  "/profile/page": "app/profile/page.js",
-  "/auth/update-password/route": "app/auth/update-password/route.js",
-  "/update-password/page": "app/update-password/page.js",
-  "/page": "app/page.js"
+  "/profile/page": "app/profile/page.js"
 }

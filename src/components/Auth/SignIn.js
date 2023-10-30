@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-//import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import cn from 'classnames';
 import { Field, Form, Formik } from 'formik';
@@ -15,7 +14,6 @@ const SignInSchema = Yup.object().shape({
 });
 
 const SignIn = () => {
-  //const supabase = createServerComponentClient();
   const supabase = createClientComponentClient()
   const [errorMsg, setErrorMsg] = useState(null);
   const router = useRouter();
@@ -30,7 +28,6 @@ const SignIn = () => {
       setErrorMsg(error.message);
     } else {
       // User signed in successfully, navigate to another page
-      //router.push('/pokemon'); // Replace '/another-page' with the actual path
       router.push('/profile');
     }
   }

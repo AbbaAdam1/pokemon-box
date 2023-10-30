@@ -22,7 +22,7 @@ export default async function Home() {
       <code className="highlight">{user.role}</code>
       <code className="highlight">{user.email}</code>
       <Link className="button" href="/profile">
-        Go to Profile
+        Go to Box
       </Link>
       <SignOut />
     </div>

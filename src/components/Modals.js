@@ -1,47 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
-import axios from 'axios';
 import supabase from "src/config/supabaseClient"
-
-const customStyles = {
-  content: {
-    top: '50%',
-    left: '50%',
-    right: 'auto',
-    bottom: 'auto',
-    marginRight: '-50%',
-    transform: 'translate(-50%, -50%)',
-  },
-};
+import {typeImages, customStyles} from './modalStyles';
 
 Modal.setAppElement('#root');
 
 const Modals = ({ isOpen, closeModal, pokemon, species, userId, pokemonId, index }) => {
-  let subtitle;
   const [userPokemonId, setUserPokemonId] = useState(null);
   const [flavorTextEn, setFlavorTextEn] = useState(null);
-
-const typeImages = {
-  normal: 'types/normal.png',
-  fire: 'types/fire.png',
-  water: 'types/water.png',
-  electric: 'types/electric.png',
-  grass: 'types/grass.png',
-  ice: 'types/ice.png',
-  fighting: 'types/fighting.png',
-  poison: 'types/poison.png',
-  ground: 'types/ground.png',
-  flying: 'types/flying.png',
-  psychic: 'types/psychic.png',
-  bug: 'types/bug.png',
-  rock: 'types/rock.png',
-  ghost: 'types/ghost.png',
-  steel: 'types/steel.png',
-  fairy: 'types/fairy.png',
-  dark: 'types/dark.png',
-  dragon: 'types/dragon.png',
-  // Add more types and their corresponding image paths as needed
-};
 
   useEffect(() => {
     // Find the entry with language "en" and extract the flavor text
