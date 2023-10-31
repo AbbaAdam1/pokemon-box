@@ -5,43 +5,29 @@ import Modals from 'src/components/Modals'
 import Dropdown from 'src/components/Dropdown';
 import {
   fetchUserPokemonData,
-  fetchUID,
   openModal,
   closeModal
-} from './pokemonHelpers';
+} from './PokemonHelpers';
 
 const PokemonTrainer = ({ user }) => {
   const [loading, setLoading] = useState(true);
   const [modalIsOpen, setIsOpen] = useState(false);
   const [userPokemon, setUserPokemon] = useState([]);
-  const [fetchError, setFetchError] = useState(null);
   const [userSpecies, setUserSpecies] = useState([]);
   const [selectedPokemonIndex, setSelectedPokemonIndex] = useState(null);
-  const [currentUser, setCurrentUser] = useState(null);
 
   //get list of user's pokemon
   useEffect(() => {
     const fetchData = async () => {
-      const { userPokemon, userSpecies, fetchError } = await fetchUserPokemonData(user);
-      if (fetchError) {
-        setFetchError(fetchError);
-      } else {
-        setUserPokemon(userPokemon);
-        setUserSpecies(userSpecies);
-      }
+      const { userPokemon, userSpecies } = await fetchUserPokemonData(user);
+
+      setUserPokemon(userPokemon);
+      setUserSpecies(userSpecies);
+
       setLoading(false);
     };
     fetchData();
   }, [user]);
-
-  //get user's ID
-  useEffect(() => {
-    const fetchUserUID = async () => {
-      const user = await fetchUID();
-      setCurrentUser(user);
-    };
-    fetchUserUID();
-  }, []);
 
   return (
     <div>
@@ -68,7 +54,7 @@ const PokemonTrainer = ({ user }) => {
       <div className="pokemon-container">
         <div className="background-image">
           <img
-            src="Box_Forest_Up.png"
+            src="box_forest.png"
             alt="Background"
             style={{ width: '648px', height: '592px' }}
           />

@@ -1,11 +1,11 @@
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
+import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
 import SignOut from 'src/components/SignOut';
-import PokemonTrainer from 'src/components/PokemonTrainer';
 
-export default async function Profile() {
+export default async function Home() {
   const cookieStore = cookies();
   const supabase = createServerComponentClient({ cookies: () => cookieStore });
 
@@ -17,15 +17,14 @@ export default async function Profile() {
     redirect('/sign-in');
   }
 
-  //      <div className="heading">Last Signed In:</div>
-  //      <code className="highlight">{new Date(user.last_sign_in_at).toUTCString()}</code>
-
   return (
     <div className="card">
-      <p className="text-2xl font-bold">User Profile</p>
+      <h2>Welcome!</h2>
+      <code className="highlight">{user.role}</code>
       <code className="highlight">{user.email}</code>
-      <PokemonTrainer user={user}/>
-
+      <Link className="button" href="/profile">
+        Go to Box
+      </Link>
       <SignOut />
     </div>
   );
