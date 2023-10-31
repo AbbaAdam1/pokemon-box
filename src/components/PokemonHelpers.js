@@ -35,17 +35,6 @@ export const fetchUserPokemonData = async (user) => {
   return { userPokemon: fetchedPokemonData, userSpecies: fetchedSpeciesData, fetchError: null };
 };
 
-//fetch user's id
-export const fetchUID = async () => {
-  try {
-    const { data } = await supabase.auth.getUser();
-    return data.user;
-  } catch (error) {
-    console.error('Error fetching user data:', error);
-    return null;
-  }
-};
-
 export const openModal = (index, setIsOpen, setSelectedPokemonIndex) => {
   setIsOpen(true);
   setSelectedPokemonIndex(index);

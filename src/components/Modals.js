@@ -25,11 +25,8 @@ const Modals = ({ isOpen, closeModal, pokemon, species, userId, pokemonId, index
         .delete()
         .eq('pokemon_id', pokemonId);
 
-      if (error) {
-        console.error('Error deleting from user collection:', error);
-      }
     } catch (error) {
-      console.error('Unexpected error:', error);
+      console.error('Error deleting from user collection:', error);
     }
   };
 

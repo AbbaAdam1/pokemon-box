@@ -5,7 +5,6 @@ import Modals from 'src/components/Modals'
 import Dropdown from 'src/components/Dropdown';
 import {
   fetchUserPokemonData,
-  fetchUID,
   openModal,
   closeModal
 } from './PokemonHelpers';
@@ -30,14 +29,6 @@ const PokemonTrainer = ({ user }) => {
     };
     fetchData();
   }, [user]);
-
-  //get user's ID
-  useEffect(() => {
-    const fetchUserUID = async () => {
-      const user = await fetchUID();
-    };
-    fetchUserUID();
-  }, []);
 
   return (
     <div>
