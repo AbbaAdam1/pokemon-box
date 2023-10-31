@@ -68,7 +68,7 @@ const PokemonTrainer = ({ user }) => {
       <div className="pokemon-container">
         <div className="background-image">
           <img
-            src="Box_Forest_Up.png"
+            src="box_forest.png"
             alt="Background"
             style={{ width: '648px', height: '592px' }}
           />

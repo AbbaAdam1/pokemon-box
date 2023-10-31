@@ -6,7 +6,6 @@ import UpdatePassword from 'src/components/Auth/UpdatePassword';
 
 export default async function UpdatePasswordPage() {
   const cookieStore = cookies();
-
   const supabase = createServerComponentClient({ cookies: () => cookieStore });
 
   const {

@@ -5,11 +5,6 @@ import { redirect } from 'next/navigation';
 import SignIn from 'src/components/Auth/SignIn';
 
 export default async function SignInPage() {
-  //_createServerComponentClient<Database>({ cookies })
-
-  //const cookieStore = cookies();
-  //return _createServerComponentClient<Database>({ cookies: () => cookieStore });
-
   const cookieStore = cookies();
   const supabase = createServerComponentClient({ cookies: () => cookieStore });
 
