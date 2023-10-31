@@ -6,7 +6,8 @@ import { redirect } from 'next/navigation';
 import SignOut from 'src/components/SignOut';
 
 export default async function Home() {
-  const supabase = createServerComponentClient({ cookies });
+  const cookieStore = cookies();
+  const supabase = createServerComponentClient({ cookies: () => cookieStore });
 
   const {
     data: { user },

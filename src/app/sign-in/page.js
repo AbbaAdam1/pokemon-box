@@ -11,8 +11,8 @@ export default async function SignInPage() {
   //return _createServerComponentClient<Database>({ cookies: () => cookieStore });
 
   const cookieStore = cookies();
-
   const supabase = createServerComponentClient({ cookies: () => cookieStore });
+
   const { data } = await supabase.auth.getSession();
 
   if (data?.session) {
