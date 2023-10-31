@@ -1,6 +1,7 @@
-# HarmonyHub
+# Pokemon Box
 
-Welcome to my app! This project was built using Next.js, TypeScript, Tailwind, Postgres, and Supabase authentication. It is a custom-made audio player that uses Spotify API to view and play various albums.
+Welcome to my app! This project was built using Next.js, TypeScript, Tailwind, Postgres, REST API, and Supabase authentication. 
+It is a Pokemon storage system where users can create an account and log-in to store, read, and delete Pokemon data.
 
 You can view a demo of this project here: [HarmonyHub](https://harmony-hub-git-master-abbaadam1.vercel.app/).
 
