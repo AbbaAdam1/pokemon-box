@@ -10,7 +10,7 @@ export const fetchUserPokemonData = async (user) => {
 
   if (error) {
     console.error('Could not fetch Pokemon data:', error);
-    return { userPokemon: [], userSpecies: [], fetchError: 'Could not fetch Pokemon data' };
+    return { userPokemon: [], userSpecies: [] };
   }
 
   const userPokemonNames = data.map(obj => obj.pokemon);

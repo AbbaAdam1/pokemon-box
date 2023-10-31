@@ -13,14 +13,13 @@ const PokemonTrainer = ({ user }) => {
   const [loading, setLoading] = useState(true);
   const [modalIsOpen, setIsOpen] = useState(false);
   const [userPokemon, setUserPokemon] = useState([]);
-  const [fetchError, setFetchError] = useState(null);
   const [userSpecies, setUserSpecies] = useState([]);
   const [selectedPokemonIndex, setSelectedPokemonIndex] = useState(null);
 
   //get list of user's pokemon
   useEffect(() => {
     const fetchData = async () => {
-      const { userPokemon, userSpecies, fetchError } = await fetchUserPokemonData(user);
+      const { userPokemon, userSpecies } = await fetchUserPokemonData(user);
 
       setUserPokemon(userPokemon);
       setUserSpecies(userSpecies);
