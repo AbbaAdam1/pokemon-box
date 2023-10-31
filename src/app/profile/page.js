@@ -7,7 +7,8 @@ import SignOut from 'src/components/SignOut';
 import PokemonTrainer from 'src/components/PokemonTrainer';
 
 export default async function Profile() {
-  const supabase = createServerComponentClient({ cookies });
+  const cookieStore = cookies();
+  const supabase = createServerComponentClient({ cookies: () => cookieStore });
 
   const {
     data: { user },
