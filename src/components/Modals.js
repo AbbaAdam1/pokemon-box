@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import supabase from "src/config/supabaseClient"
-import {typeImages, customStyles} from './modalStyles';
+import {typeImages, customStyles} from './ModalStyles';
 
 Modal.setAppElement('#root');
 
 const Modals = ({ isOpen, closeModal, pokemon, species, userId, pokemonId, index }) => {
-  const [userPokemonId, setUserPokemonId] = useState(null);
   const [flavorTextEn, setFlavorTextEn] = useState(null);
 
   useEffect(() => {
@@ -20,10 +19,18 @@ const Modals = ({ isOpen, closeModal, pokemon, species, userId, pokemonId, index
   }, [species]);
 
   const deleteFromUserCollection = async () => {
-    const { error } = await supabase
-                .from('user_pokemon')
-                .delete()
-                .eq('pokemon_id', pokemonId);
+    try {
+      const { error } = await supabase
+        .from('user_pokemon')
+        .delete()
+        .eq('pokemon_id', pokemonId);
+
+      if (error) {
+        console.error('Error deleting from user collection:', error);
+      }
+    } catch (error) {
+      console.error('Unexpected error:', error);
+    }
   };
 
   return (

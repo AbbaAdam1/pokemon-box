@@ -8,7 +8,7 @@ import {
   fetchUID,
   openModal,
   closeModal
-} from './pokemonHelpers';
+} from './PokemonHelpers';
 
 const PokemonTrainer = ({ user }) => {
   const [loading, setLoading] = useState(true);
@@ -17,18 +17,15 @@ const PokemonTrainer = ({ user }) => {
   const [fetchError, setFetchError] = useState(null);
   const [userSpecies, setUserSpecies] = useState([]);
   const [selectedPokemonIndex, setSelectedPokemonIndex] = useState(null);
-  const [currentUser, setCurrentUser] = useState(null);
 
   //get list of user's pokemon
   useEffect(() => {
     const fetchData = async () => {
       const { userPokemon, userSpecies, fetchError } = await fetchUserPokemonData(user);
-      if (fetchError) {
-        setFetchError(fetchError);
-      } else {
-        setUserPokemon(userPokemon);
-        setUserSpecies(userSpecies);
-      }
+
+      setUserPokemon(userPokemon);
+      setUserSpecies(userSpecies);
+
       setLoading(false);
     };
     fetchData();
@@ -38,7 +35,6 @@ const PokemonTrainer = ({ user }) => {
   useEffect(() => {
     const fetchUserUID = async () => {
       const user = await fetchUID();
-      setCurrentUser(user);
     };
     fetchUserUID();
   }, []);
