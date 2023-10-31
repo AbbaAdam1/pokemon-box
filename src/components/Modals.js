@@ -19,16 +19,16 @@ const Modals = ({ isOpen, closeModal, pokemon, species, userId, pokemonId, index
   }, [species]);
 
   const deleteFromUserCollection = async () => {
-    try {
-      const { error } = await supabase
-        .from('user_pokemon')
-        .delete()
-        .eq('pokemon_id', pokemonId);
+    const { error } = await supabase
+      .from('user_pokemon')
+      .delete()
+      .eq('pokemon_id', pokemonId);
 
-    } catch (error) {
+    if (error) {
       console.error('Error deleting from user collection:', error);
     }
   };
+
 
   return (
       <Modal
