@@ -60,7 +60,7 @@ const PokemonTrainer = ({ user }) => {
           />
         </div>
 
-        <div className="grid grid-cols-5 sm:grid-cols-5 md:grid-cols-5 lg:grid-cols-6 gap-3 mt-6 absolute top-20 left-0">
+        <div className="grid grid-cols-5 md:grid-cols-6 gap-3 mt-6 absolute top-20 left-0">
           {userPokemon.map((pokemonData, index) => (
             <div key={index} className="cursor-pointer">
               <img
