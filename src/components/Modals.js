@@ -53,7 +53,7 @@ const Modals = ({ isOpen, closeModal, pokemon, species, userId, pokemonId, index
             <img
               src={pokemon.sprites.other['official-artwork'].front_default}
               alt={pokemon.name}
-              style={{ width: '400px', height: '400px' }}
+              style={{ width: '270px', height: '270px' }}
             />
           </div>
           <p className="mb-4">{flavorTextEn || 'Flavor text not available in English.'}</p>

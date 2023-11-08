@@ -67,7 +67,7 @@ const PokemonTrainer = ({ user }) => {
                 src={pokemonData.sprites.front_default}
                 alt={pokemonData.name}
                 onClick={() => openModal(index, setIsOpen, setSelectedPokemonIndex)}
-                className="sm:w-24 sm:h-24 md:w-24 md:h-24 lg:w-24 lg:h-24"
+                className="w-24 h-24"
               />
               {userSpecies[index] && (
                 <Modals
