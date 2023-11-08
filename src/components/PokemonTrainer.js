@@ -65,7 +65,7 @@ const PokemonTrainer = ({ user }) => {
             <div key={index} className="cursor-pointer">
               <div className="relative w-24 h-24">
                 <img
-                  src={pokemonData.sprites.front_default}
+                  src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonData.id}.png`}
                   alt={pokemonData.name}
                   onClick={() => openModal(index, setIsOpen, setSelectedPokemonIndex)}
                   className="absolute w-full h-full object-cover"
