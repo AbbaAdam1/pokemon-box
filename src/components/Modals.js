@@ -60,8 +60,8 @@ const Modals = ({ isOpen, closeModal, pokemon, species, userId, pokemonId, index
           <div className="mb-4 flex flex-col items-center">
             <p className="mb-2 mr-1">Type:</p>
             <div className="flex">
-              <img className="mr-2" src={typeImages[pokemon.types[0].type.name]} alt={pokemon.name} />
-              {pokemon.types[1] && <img src={typeImages[pokemon.types[1].type.name]} alt={pokemon.name} />}
+              <img className="mr-2" src={typeImages[pokemon.types[0].type.name]} alt={pokemon.types[0].type.name} />
+              {pokemon.types[1] && <img src={typeImages[pokemon.types[1].type.name]} alt={pokemon.types[1].type.name} />}
             </div>
           </div>
 
