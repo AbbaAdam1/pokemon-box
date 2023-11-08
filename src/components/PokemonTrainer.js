@@ -60,17 +60,14 @@ const PokemonTrainer = ({ user }) => {
           />
         </div>
 
-        <div className="grid grid-cols-4 md:grid-cols-6 gap-3 mt-6 absolute top-20 left-0">
+        <div className="grid grid-cols-5 md:grid-cols-6 gap-3 mt-6 absolute top-20 left-0">
           {userPokemon.map((pokemonData, index) => (
             <div key={index} className="cursor-pointer">
-              <div className="relative w-24 h-24">
-                <img
-                  src={pokemonData.sprites.front_default}
-                  alt={pokemonData.name}
-                  onClick={() => openModal(index, setIsOpen, setSelectedPokemonIndex)}
-                  className="absolute w-full h-full object-cover"
-                />
-              </div>
+              <img
+                src={pokemonData.sprites.front_default}
+                alt={pokemonData.name}
+                onClick={() => openModal(index, setIsOpen, setSelectedPokemonIndex)}
+              />
               {userSpecies[index] && (
                 <Modals
                   isOpen={modalIsOpen && selectedPokemonIndex === index}
