@@ -51,7 +51,7 @@ const Modals = ({ isOpen, closeModal, pokemon, species, userId, pokemonId, index
           <button className="absolute top-2 right-2 pt-3 pr-3 text-red-600 font-bold text-xl" onClick={closeModal}>X</button>
           <div className="flex justify-center items-center">
             <img
-              src={pokemon.sprites.other['official-artwork'].front_default}
+              src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png`}
               alt={pokemon.name}
               style={{ width: '270px', height: '270px' }}
             />
