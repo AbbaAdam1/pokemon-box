@@ -60,7 +60,7 @@ const PokemonTrainer = ({ user }) => {
           />
         </div>
 
-        <div className="grid grid-cols-5 md:grid-cols-6 gap-1 md:gap-3 mt-6 absolute top-20 left-0">
+        <div className="grid grid-cols-5 md:grid-cols-6 gap-3 mt-6 absolute top-20 left-0">
           {userPokemon.map((pokemonData, index) => (
             <div key={index} className="cursor-pointer">
               <div className="relative w-[80px] h-[80px] md:w-24 md:h-24">
@@ -68,7 +68,7 @@ const PokemonTrainer = ({ user }) => {
                   src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonData.id}.png`}
                   alt={pokemonData.name}
                   onClick={() => openModal(index, setIsOpen, setSelectedPokemonIndex)}
-                  className="absolute w-full h-full object-cover"
+                  className="absolute w-15 h-15 md:w-full md:h-full md:object-cover"
                 />
               </div>
               {userSpecies[index] && (
