@@ -11,7 +11,7 @@ export default async function RootLayout({ children }) {
             <h1 className="pb-5 text-5xl font-bold sm:text-4xl">
               <div className="flex items-center">
                 <img src="logo.png" alt="Logo" className="h-20" />
-                <img src="box.png" alt="boxlogo" className="h-7" />
+                <img src="box.png" alt="BoxLogo" className="h-7" />
               </div>
             </h1>
             <AuthProvider>{children}</AuthProvider>

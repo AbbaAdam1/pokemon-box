@@ -7,6 +7,14 @@ const nextConfig = {
     }
     return config;
   },
+  async rewrites() {
+    return [
+      {
+        source: '/index',
+        destination: '/app/page',
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;

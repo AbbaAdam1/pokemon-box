@@ -5,43 +5,29 @@ import Modals from 'src/components/Modals'
 import Dropdown from 'src/components/Dropdown';
 import {
   fetchUserPokemonData,
-  fetchUID,
   openModal,
   closeModal
-} from './pokemonHelpers';
+} from './PokemonHelpers';
 
 const PokemonTrainer = ({ user }) => {
   const [loading, setLoading] = useState(true);
   const [modalIsOpen, setIsOpen] = useState(false);
   const [userPokemon, setUserPokemon] = useState([]);
-  const [fetchError, setFetchError] = useState(null);
   const [userSpecies, setUserSpecies] = useState([]);
   const [selectedPokemonIndex, setSelectedPokemonIndex] = useState(null);
-  const [currentUser, setCurrentUser] = useState(null);
 
   //get list of user's pokemon
   useEffect(() => {
     const fetchData = async () => {
-      const { userPokemon, userSpecies, fetchError } = await fetchUserPokemonData(user);
-      if (fetchError) {
-        setFetchError(fetchError);
-      } else {
-        setUserPokemon(userPokemon);
-        setUserSpecies(userSpecies);
-      }
+      const { userPokemon, userSpecies } = await fetchUserPokemonData(user);
+
+      setUserPokemon(userPokemon);
+      setUserSpecies(userSpecies);
+
       setLoading(false);
     };
     fetchData();
   }, [user]);
-
-  //get user's ID
-  useEffect(() => {
-    const fetchUserUID = async () => {
-      const user = await fetchUID();
-      setCurrentUser(user);
-    };
-    fetchUserUID();
-  }, []);
 
   return (
     <div>
@@ -68,20 +54,22 @@ const PokemonTrainer = ({ user }) => {
       <div className="pokemon-container">
         <div className="background-image">
           <img
-            src="Box_Forest_Up.png"
+            src="box_forest.png"
             alt="Background"
             style={{ width: '648px', height: '592px' }}
           />
         </div>
 
-        <div className="grid grid-cols-5 sm:grid-cols-5 md:grid-cols-5 lg:grid-cols-6 gap-3 mt-6 absolute top-20 left-0">
+        <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 mt-6 absolute top-20 left-0">
           {userPokemon.map((pokemonData, index) => (
             <div key={index} className="cursor-pointer">
-              <img
-                src={pokemonData.sprites.front_default}
-                alt={pokemonData.name}
-                onClick={() => openModal(index, setIsOpen, setSelectedPokemonIndex)}
-              />
+              <div className="relative w-30 h-30 sm:w-24 sm:h-24 md:w-36 md:h-36">
+                <img
+                  src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonData.id}.png`}
+                  alt={pokemonData.name}
+                  onClick={() => openModal(index, setIsOpen, setSelectedPokemonIndex)}
+                />
+              </div>
               {userSpecies[index] && (
                 <Modals
                   isOpen={modalIsOpen && selectedPokemonIndex === index}

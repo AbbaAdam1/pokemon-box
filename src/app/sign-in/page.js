@@ -5,7 +5,9 @@ import { redirect } from 'next/navigation';
 import SignIn from 'src/components/Auth/SignIn';
 
 export default async function SignInPage() {
-  const supabase = createServerComponentClient({ cookies });
+  const cookieStore = cookies();
+  const supabase = createServerComponentClient({ cookies: () => cookieStore });
+
   const { data } = await supabase.auth.getSession();
 
   if (data?.session) {
