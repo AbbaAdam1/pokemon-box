@@ -1,12 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import supabase from "src/config/supabaseClient"
-import {
-  fetchUserPokemonData,
-  fetchUID,
-  openModal,
-  closeModal
-} from './pokemonHelpers';
 
 const Dropdown = (props) => {
   const [pokemonList, setPokemonList] = useState([]);

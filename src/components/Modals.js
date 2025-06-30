@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import supabase from "src/config/supabaseClient"
-import {typeImages, customStyles} from './modalStyles';
+import {typeImages, customStyles} from './ModalStyles';
 
 Modal.setAppElement('#root');
 
 const Modals = ({ isOpen, closeModal, pokemon, species, userId, pokemonId, index }) => {
-  const [userPokemonId, setUserPokemonId] = useState(null);
   const [flavorTextEn, setFlavorTextEn] = useState(null);
 
   useEffect(() => {
@@ -21,10 +20,15 @@ const Modals = ({ isOpen, closeModal, pokemon, species, userId, pokemonId, index
 
   const deleteFromUserCollection = async () => {
     const { error } = await supabase
-                .from('user_pokemon')
-                .delete()
-                .eq('pokemon_id', pokemonId);
+      .from('user_pokemon')
+      .delete()
+      .eq('pokemon_id', pokemonId);
+
+    if (error) {
+      console.error('Error deleting from user collection:', error);
+    }
   };
+
 
   return (
       <Modal
@@ -47,17 +51,17 @@ const Modals = ({ isOpen, closeModal, pokemon, species, userId, pokemonId, index
           <button className="absolute top-2 right-2 pt-3 pr-3 text-red-600 font-bold text-xl" onClick={closeModal}>X</button>
           <div className="flex justify-center items-center">
             <img
-              src={pokemon.sprites.other['official-artwork'].front_default}
+              src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png`}
               alt={pokemon.name}
-              style={{ width: '400px', height: '400px' }}
+              style={{ width: '270px', height: '270px' }}
             />
           </div>
           <p className="mb-4">{flavorTextEn || 'Flavor text not available in English.'}</p>
           <div className="mb-4 flex flex-col items-center">
             <p className="mb-2 mr-1">Type:</p>
             <div className="flex">
-              <img className="mr-2" src={typeImages[pokemon.types[0].type.name]} alt={pokemon.name} />
-              {pokemon.types[1] && <img src={typeImages[pokemon.types[1].type.name]} alt={pokemon.name} />}
+              <img className="mr-2" src={typeImages[pokemon.types[0].type.name]} alt={pokemon.types[0].type.name} />
+              {pokemon.types[1] && <img src={typeImages[pokemon.types[1].type.name]} alt={pokemon.types[1].type.name} />}
             </div>
           </div>
 
