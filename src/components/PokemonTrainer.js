@@ -29,6 +29,12 @@ const PokemonTrainer = ({ user }) => {
     fetchData();
   }, [user]);
 
+  // Add this handler function
+  const handleDeletePokemon = (deletedIndex) => {
+    setUserPokemon(prev => prev.filter((_, index) => index !== deletedIndex));
+    setUserSpecies(prev => prev.filter((_, index) => index !== deletedIndex));
+  };
+
   return (
     <div>
       {loading && (
@@ -79,6 +85,7 @@ const PokemonTrainer = ({ user }) => {
                   userId={user.id}
                   pokemonId={pokemonData.id}
                   index={index}
+                  onDelete={handleDeletePokemon}
                 />
               )}
             </div>
