@@ -5,7 +5,7 @@ import { redirect } from 'next/navigation';
 import UpdatePassword from 'src/components/Auth/UpdatePassword';
 
 export default async function UpdatePasswordPage() {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const supabase = createServerComponentClient({ cookies: () => cookieStore });
 
   const {
