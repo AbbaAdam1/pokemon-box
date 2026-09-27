@@ -73,7 +73,7 @@ const SignIn = () => {
             </Link>
 
             <button className="button-inverse w-full" type="submit">
-              Submit
+              Log in
             </button>
           </Form>
         )}

@@ -1,3 +1,4 @@
+//used in PokemonTrainer
 import axios from 'axios';
 import supabase from "src/config/supabaseClient";
 
@@ -10,7 +11,7 @@ export const fetchUserPokemonData = async (user) => {
 
   if (error) {
     console.error('Could not fetch Pokemon data:', error);
-    return { userPokemon: [], userSpecies: [], fetchError: 'Could not fetch Pokemon data' };
+    return { userPokemon: [], fetchError: 'Could not fetch Pokémon data.' };
   }
 
   const userPokemonNames = data.map(obj => obj.pokemon);
@@ -32,18 +33,12 @@ export const fetchUserPokemonData = async (user) => {
     }
   }
 
-  return { userPokemon: fetchedPokemonData, userSpecies: fetchedSpeciesData, fetchError: null };
-};
+  const userCollection = fetchedPokemonData.map((pokemonData, index) => ({
+    pokemon: pokemonData,
+    species: fetchedSpeciesData[index],
+  }));
 
-//fetch user's id
-export const fetchUID = async () => {
-  try {
-    const { data } = await supabase.auth.getUser();
-    return data.user;
-  } catch (error) {
-    console.error('Error fetching user data:', error);
-    return null;
-  }
+  return { userPokemon: userCollection, fetchError: null };
 };
 
 export const openModal = (index, setIsOpen, setSelectedPokemonIndex) => {

@@ -5,43 +5,52 @@ import Modals from 'src/components/Modals'
 import Dropdown from 'src/components/Dropdown';
 import {
   fetchUserPokemonData,
-  fetchUID,
   openModal,
   closeModal
-} from './pokemonHelpers';
+} from './PokemonHelpers';
 
 const PokemonTrainer = ({ user }) => {
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [modalIsOpen, setIsOpen] = useState(false);
   const [userPokemon, setUserPokemon] = useState([]);
-  const [fetchError, setFetchError] = useState(null);
-  const [userSpecies, setUserSpecies] = useState([]);
   const [selectedPokemonIndex, setSelectedPokemonIndex] = useState(null);
-  const [currentUser, setCurrentUser] = useState(null);
 
   //get list of user's pokemon
   useEffect(() => {
+    let isMounted = true;
+
     const fetchData = async () => {
-      const { userPokemon, userSpecies, fetchError } = await fetchUserPokemonData(user);
-      if (fetchError) {
-        setFetchError(fetchError);
-      } else {
-        setUserPokemon(userPokemon);
-        setUserSpecies(userSpecies);
+      try {
+        setLoading(true);
+        setError(null);
+
+        const { userPokemon: userCollection, fetchError } = await fetchUserPokemonData(user);
+
+        if (!isMounted) return;
+
+        setUserPokemon(userCollection || []);
+        setError(fetchError || null);
+      } catch (err) {
+        if (!isMounted) return;
+        setError('Unable to load your Pokémon box right now.');
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
       }
-      setLoading(false);
     };
+
     fetchData();
+
+    return () => {
+      isMounted = false;
+    };
   }, [user]);
 
-  //get user's ID
-  useEffect(() => {
-    const fetchUserUID = async () => {
-      const user = await fetchUID();
-      setCurrentUser(user);
-    };
-    fetchUserUID();
-  }, []);
+  const handleDeletePokemon = (deletedPokemonId) => {
+    setUserPokemon(prev => prev.filter(entry => entry.pokemon.id !== deletedPokemonId));
+  };
 
   return (
     <div>
@@ -55,46 +64,62 @@ const PokemonTrainer = ({ user }) => {
         </div>
       )}
 
-      {!loading && (
+      {!loading && !error && (
         <Dropdown
           setUserPokemon={setUserPokemon}
-          setUserSpecies={setUserSpecies}
           userPokemon={userPokemon}
-          userSpecies={userSpecies}
           userId={user.id}
         />
+      )}
+
+      {error && (
+        <div className="text-red-500 text-center pb-4">
+          {error}
+        </div>
+      )}
+
+      {!loading && !error && userPokemon.length === 0 && (
+        <div className="text-center pb-4">Your Pokémon box is empty.</div>
       )}
 
       <div className="pokemon-container">
         <div className="background-image">
           <img
-            src="Box_Forest_Up.png"
+            src="box_forest.png"
             alt="Background"
             style={{ width: '648px', height: '592px' }}
           />
         </div>
 
-        <div className="grid grid-cols-5 sm:grid-cols-5 md:grid-cols-5 lg:grid-cols-6 gap-3 mt-6 absolute top-20 left-0">
-          {userPokemon.map((pokemonData, index) => (
-            <div key={index} className="cursor-pointer">
-              <img
-                src={pokemonData.sprites.front_default}
-                alt={pokemonData.name}
-                onClick={() => openModal(index, setIsOpen, setSelectedPokemonIndex)}
-              />
-              {userSpecies[index] && (
-                <Modals
-                  isOpen={modalIsOpen && selectedPokemonIndex === index}
-                  closeModal={() => closeModal(setIsOpen)}
-                  pokemon={pokemonData}
-                  species={userSpecies[index]}
-                  userId={user.id}
-                  pokemonId={pokemonData.id}
-                  index={index}
-                />
-              )}
-            </div>
-          ))}
+        <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 mt-6 absolute top-20 left-0">
+          {userPokemon.map((entry, index) => {
+            const pokemonData = entry.pokemon;
+            const speciesData = entry.species;
+
+            return (
+              <div key={pokemonData.id} className="cursor-pointer">
+                <div className="relative w-30 h-30 sm:w-24 sm:h-24 md:w-36 md:h-36">
+                  <img
+                    src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonData.id}.png`}
+                    alt={pokemonData.name}
+                    onClick={() => openModal(index, setIsOpen, setSelectedPokemonIndex)}
+                  />
+                </div>
+                {speciesData && (
+                  <Modals
+                    isOpen={modalIsOpen && selectedPokemonIndex === index}
+                    closeModal={() => closeModal(setIsOpen)}
+                    pokemon={pokemonData}
+                    species={speciesData}
+                    userId={user.id}
+                    pokemonId={pokemonData.id}
+                    index={index}
+                    onDelete={handleDeletePokemon}
+                  />
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>
