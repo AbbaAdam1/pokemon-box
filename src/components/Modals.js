@@ -29,8 +29,7 @@ const Modals = ({ isOpen, closeModal, pokemon, species, userId, pokemonId, index
       return;
     }
 
-    // Update parent state and close modal
-    onDelete(index);
+    onDelete(pokemonId);
     closeModal();
   };
 
