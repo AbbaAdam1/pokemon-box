@@ -11,7 +11,7 @@ export const fetchUserPokemonData = async (user) => {
 
   if (error) {
     console.error('Could not fetch Pokemon data:', error);
-    return { userPokemon: [], userSpecies: [] };
+    return { userPokemon: [], fetchError: 'Could not fetch Pokémon data.' };
   }
 
   const userPokemonNames = data.map(obj => obj.pokemon);
@@ -33,7 +33,12 @@ export const fetchUserPokemonData = async (user) => {
     }
   }
 
-  return { userPokemon: fetchedPokemonData, userSpecies: fetchedSpeciesData, fetchError: null };
+  const userCollection = fetchedPokemonData.map((pokemonData, index) => ({
+    pokemon: pokemonData,
+    species: fetchedSpeciesData[index],
+  }));
+
+  return { userPokemon: userCollection, fetchError: null };
 };
 
 export const openModal = (index, setIsOpen, setSelectedPokemonIndex) => {

@@ -11,28 +11,45 @@ import {
 
 const PokemonTrainer = ({ user }) => {
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [modalIsOpen, setIsOpen] = useState(false);
   const [userPokemon, setUserPokemon] = useState([]);
-  const [userSpecies, setUserSpecies] = useState([]);
   const [selectedPokemonIndex, setSelectedPokemonIndex] = useState(null);
 
   //get list of user's pokemon
   useEffect(() => {
+    let isMounted = true;
+
     const fetchData = async () => {
-      const { userPokemon, userSpecies } = await fetchUserPokemonData(user);
+      try {
+        setLoading(true);
+        setError(null);
 
-      setUserPokemon(userPokemon);
-      setUserSpecies(userSpecies);
+        const { userPokemon: userCollection, fetchError } = await fetchUserPokemonData(user);
 
-      setLoading(false);
+        if (!isMounted) return;
+
+        setUserPokemon(userCollection || []);
+        setError(fetchError || null);
+      } catch (err) {
+        if (!isMounted) return;
+        setError('Unable to load your Pokémon box right now.');
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
     };
+
     fetchData();
+
+    return () => {
+      isMounted = false;
+    };
   }, [user]);
 
-  // Add this handler function
-  const handleDeletePokemon = (deletedIndex) => {
-    setUserPokemon(prev => prev.filter((_, index) => index !== deletedIndex));
-    setUserSpecies(prev => prev.filter((_, index) => index !== deletedIndex));
+  const handleDeletePokemon = (deletedPokemonId) => {
+    setUserPokemon(prev => prev.filter(entry => entry.pokemon.id !== deletedPokemonId));
   };
 
   return (
@@ -47,14 +64,22 @@ const PokemonTrainer = ({ user }) => {
         </div>
       )}
 
-      {!loading && (
+      {!loading && !error && (
         <Dropdown
           setUserPokemon={setUserPokemon}
-          setUserSpecies={setUserSpecies}
           userPokemon={userPokemon}
-          userSpecies={userSpecies}
           userId={user.id}
         />
+      )}
+
+      {error && (
+        <div className="text-red-500 text-center pb-4">
+          {error}
+        </div>
+      )}
+
+      {!loading && !error && userPokemon.length === 0 && (
+        <div className="text-center pb-4">Your Pokémon box is empty.</div>
       )}
 
       <div className="pokemon-container">
@@ -67,29 +92,34 @@ const PokemonTrainer = ({ user }) => {
         </div>
 
         <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 mt-6 absolute top-20 left-0">
-          {userPokemon.map((pokemonData, index) => (
-            <div key={index} className="cursor-pointer">
-              <div className="relative w-30 h-30 sm:w-24 sm:h-24 md:w-36 md:h-36">
-                <img
-                  src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonData.id}.png`}
-                  alt={pokemonData.name}
-                  onClick={() => openModal(index, setIsOpen, setSelectedPokemonIndex)}
-                />
+          {userPokemon.map((entry, index) => {
+            const pokemonData = entry.pokemon;
+            const speciesData = entry.species;
+
+            return (
+              <div key={pokemonData.id} className="cursor-pointer">
+                <div className="relative w-30 h-30 sm:w-24 sm:h-24 md:w-36 md:h-36">
+                  <img
+                    src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonData.id}.png`}
+                    alt={pokemonData.name}
+                    onClick={() => openModal(index, setIsOpen, setSelectedPokemonIndex)}
+                  />
+                </div>
+                {speciesData && (
+                  <Modals
+                    isOpen={modalIsOpen && selectedPokemonIndex === index}
+                    closeModal={() => closeModal(setIsOpen)}
+                    pokemon={pokemonData}
+                    species={speciesData}
+                    userId={user.id}
+                    pokemonId={pokemonData.id}
+                    index={index}
+                    onDelete={handleDeletePokemon}
+                  />
+                )}
               </div>
-              {userSpecies[index] && (
-                <Modals
-                  isOpen={modalIsOpen && selectedPokemonIndex === index}
-                  closeModal={() => closeModal(setIsOpen)}
-                  pokemon={pokemonData}
-                  species={userSpecies[index]}
-                  userId={user.id}
-                  pokemonId={pokemonData.id}
-                  index={index}
-                  onDelete={handleDeletePokemon}
-                />
-              )}
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>

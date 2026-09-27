@@ -42,7 +42,7 @@ const Dropdown = (props) => {
 
       const selectedPokemonId = selectedPokemonData.id;
 
-      const isDuplicate = props.userPokemon.some(pokemon => pokemon.name === selectedPokemonName);
+      const isDuplicate = props.userPokemon.some(entry => entry.pokemon.name === selectedPokemonName);
 
       if (isDuplicate) {
         setErrorMessage('User already has this Pokémon');
@@ -55,8 +55,10 @@ const Dropdown = (props) => {
             .insert({ user_id: props.userId, pokemon_id: selectedPokemonId, pokemon: selectedPokemonName });
 
           if (!error) {
-            props.setUserPokemon([...props.userPokemon, selectedPokemonData]);
-            props.setUserSpecies([...props.userSpecies, selectedSpeciesData]);
+            props.setUserPokemon([
+              ...props.userPokemon,
+              { pokemon: selectedPokemonData, species: selectedSpeciesData }
+            ]);
           } else {
             setErrorMessage('Error inserting Pokemon data into user_pokemon');
           }
