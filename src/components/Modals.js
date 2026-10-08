@@ -30,7 +30,7 @@ const Modals = ({ isOpen, closeModal, pokemon, species, userId, pokemonId, index
     }
 
     // Update parent state and close modal
-    onDelete(index);
+    onDelete(pokemonId);
     closeModal();
   };
 
@@ -61,7 +61,7 @@ const Modals = ({ isOpen, closeModal, pokemon, species, userId, pokemonId, index
         <div className="relative bg-gradient-to-b from-gray-50 to-white rounded-2xl overflow-hidden">
           {/* Close button */}
           <button
-            className="absolute top-4 right-4 z-10 flex items-center justify-center rounded-full bg-white hover:bg-gray-100 shadow-md text-gray-700 hover:text-black"
+            className="absolute top-2 right-4 z-10 flex items-center justify-center rounded-full bg-white hover:bg-gray-100 shadow-md text-gray-700 hover:text-black"
             style={{ width: '36px', height: '36px', borderRadius: '9999px' }}
             onClick={closeModal}
             aria-label="Close modal"
