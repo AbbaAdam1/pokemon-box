@@ -22,6 +22,7 @@ const Modals = ({ isOpen, closeModal, pokemon, species, userId, pokemonId, index
     const { error } = await supabase
       .from('user_pokemon')
       .delete()
+      .eq('user_id', userId)
       .eq('pokemon_id', pokemonId);
 
     if (error) {
