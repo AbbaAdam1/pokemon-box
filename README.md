@@ -9,7 +9,7 @@ A web app for building your own Pokémon collection. Sign up, pick Pokémon from
 ## Features
 
 - **Accounts:** sign up, sign in, sign out, and reset a forgotten password by email (Supabase Auth)
-- **Add Pokémon:** choose any of the original 151 from a dropdown, and it's saved to your box
+- **Add Pokémon:** choose any of the original 151 from a dropdown, and it's saved to your box (up to 24 per box, one of each species)
 - **View details:** click a Pokémon to see its official artwork, types, and Pokédex entry
 - **Release Pokémon:** remove a Pokémon from your box
 - **Works on mobile:** the layout adjusts to the screen size
